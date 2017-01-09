@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 
 using System.Net;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Cheque.Controllers
 {
     public class HomeController : Controller
     {
+        private string garageBenchURL = @"http://192.168.1.18/";
         public ActionResult Index()
         {
             return View();
@@ -33,93 +35,78 @@ namespace Cheque.Controllers
             return Json(new { time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Shop()
-        {
-            string r;
-           if(Request.IsAuthenticated)
-           {
-                if (User.Identity.Name == "adamdthomas@gmail.com")
-                {
-                    string url = "http://192.168.1.18/Update";
-                    string responseText;
-
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    Stream resStream = response.GetResponseStream();
-
-                    StreamReader reader = new StreamReader(resStream);
-
-                    r = reader.ReadToEnd();
-
-                }
-                else
-                {
-                    r = "You are unauthorized to view this service.";
-                }
-
-            }
-            else
-            {
-                r = "You must be authenticated to view this service.";
-            }
-            return Content(r);
-
-        }
-
-
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
         public ActionResult Dashboard()
         {
-            ViewBag.Message = "message from microcontroller 1";
-
+            rest(garageBenchURL + "Update");
+            ViewBag.Message = "";
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Dashboard(string min)
+        {
+            rest(garageBenchURL + "addmin!" + min + "!");
+            ViewBag.Message = min + " Minutes Added";
+            return RedirectToAction("Dashboard");
+
         }
 
         public ActionResult AddTime()
         {
-            rest("http://192.168.1.18/H");
+            rest(garageBenchURL + "H");
             ViewBag.Message = "15 Minutes Added";
 
-            return View("Dashboard");
+            return RedirectToAction("Dashboard");
         }
 
         public ActionResult RemoveTime()
         {
-            rest("http://192.168.1.18/L");
+            rest(garageBenchURL + "L");
             ViewBag.Message = "Time Reset";
 
-            return View("Dashboard");
+            return RedirectToAction("Dashboard");
         }
 
         public ActionResult Update()
         {
-            rest("http://192.168.1.18/Update");
-            ViewBag.Message = "Data pulled from controller";
 
-            return View("Dashboard");
+            rest(garageBenchURL + "Update");
+            return RedirectToAction("Dashboard");
         }
 
-        private string rest(string uri)
+        private void rest(string uri)
         {
-            string r;
+            string r = "";
+            bool ok = false;
+
             if (Request.IsAuthenticated)
             {
                 if (User.Identity.Name == "adamdthomas@gmail.com")
                 {
                     string url = uri;
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    Stream resStream = response.GetResponseStream();
+                    try
+                    {
+                        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                        Stream resStream = response.GetResponseStream();
 
-                    StreamReader reader = new StreamReader(resStream);
+                        StreamReader reader = new StreamReader(resStream);
 
-                    r = reader.ReadToEnd();
+                        r = reader.ReadToEnd();
+                        ok = true;
+                    }
+                    catch (Exception)
+                    {
+
+                        ok = false;
+                    }
+
 
                 }
                 else
@@ -133,7 +120,30 @@ namespace Cheque.Controllers
                 r = "You must be authenticated to view this service.";
             }
 
-            return "";
+            if (ok)
+            {
+                Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
+
+                ViewBag.Temp = JD["Temp"];
+                ViewBag.Humidity = JD["Humidity"];
+                ViewBag.Pressure = JD["Pressure"];
+                ViewBag.Hour = JD["HourRemaining"];
+                ViewBag.Min = JD["MinutesRemaining"];
+                ViewBag.Sec = JD["SecondsRemaining"];
+                ViewBag.RelayOne = JD["RelayOneStatus"];
+            }
+            else
+            {
+                ViewBag.Temp = "ERROR";
+                ViewBag.Humidity = "ERROR";
+                ViewBag.Pressure = "ERROR";
+                ViewBag.Hour = "ERROR";
+                ViewBag.Min = "ERROR";
+                ViewBag.Sec = "ERROR";
+                ViewBag.RelayOne = "ERROR";
+            }
+
+
         }
     }
 }

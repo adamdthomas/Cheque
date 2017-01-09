@@ -3,24 +3,49 @@
     ViewBag.homestat = "Test sat";
 }
 
-<h1 class="lead">Dashboard</h1>
+@if (Request.IsAuthenticated)
+{
+    if (User.Identity.Name == "adamdthomas@gmail.com")
+    {
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        @if (Request.IsAuthenticated)
-        {
-            if (User.Identity.Name == "adamdthomas@gmail.com")
-            {
-                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
-                <a type="button" class="btn btn-default" href=@Url.Action("AddTime", "Home")>Add Time</a>
-                <a type="button" class="btn btn-default" href=@Url.Action("RemoveTime", "Home")>Remove Time</a>
-             
-                <h3>Status:</h3>
+        <h1 class="lead">Dashboard</h1>
 
-                <p>HomeStat: @ViewBag.homestat</p>
-                <p>Message: @ViewBag.Message</p>
-            }
-         }
-    </div>
-</div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>Garage</h4>
+                <br />
 
+
+                <form method="post">
+                    <div class="form-group">
+                        <label name="addMinInput">Add Minutes</label>
+                        <input type="text" class="form-control" name="min" placeholder="Min">
+                    </div>
+                    <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
+                    <a type="button" class="btn btn-default" href=@Url.Action("AddTime", "Home")>Add 15</a>
+                    <a type="button" class="btn btn-default" href=@Url.Action("RemoveTime", "Home")>Reset</a>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+
+                <br />
+                <br />
+
+                <p>Temperature: @ViewBag.Temp</p>
+                <p>Humidity: @ViewBag.Humidity</p>
+                <p>Pressure: @ViewBag.Pressure</p>
+                <p>Time Remaining: @ViewBag.Hour:@ViewBag.Min:@ViewBag.Sec</p>
+
+                <br />
+                <br />
+                <h3>@ViewBag.Message</h3>
+            </div>
+        </div>
+
+
+
+    }
+}
+else
+{
+    <h3>You are not allowed to view this page.</h3>    
+}
