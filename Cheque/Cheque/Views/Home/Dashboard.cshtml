@@ -30,9 +30,9 @@
                 <br />
                 <br />
 
-                <p>Temperature: @ViewBag.Temp</p>
+                <p>Temperature: @ViewBag.Temp %</p>
                 <p>Humidity: @ViewBag.Humidity</p>
-                <p>Pressure: @ViewBag.Pressure</p>
+                <p>Pressure: @ViewBag.Pressure hPa</p>
                 <p>Time Remaining: @ViewBag.Hour:@ViewBag.Min:@ViewBag.Sec</p>
 
                 <br />
@@ -40,12 +40,9 @@
                 <h3>@ViewBag.Message</h3>
             </div>
         </div>
-
-
-
     }
 }
 else
 {
-    <h3>You are not allowed to view this page.</h3>    
+    <h3>You are not allowed to view this page.</h3>
 }

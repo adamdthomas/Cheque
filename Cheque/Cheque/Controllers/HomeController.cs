@@ -23,6 +23,11 @@ namespace Cheque.Controllers
             return View();
         }
 
+        public ActionResult Video()
+        {
+            return View();
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -75,7 +80,6 @@ namespace Cheque.Controllers
 
         public ActionResult Update()
         {
-
             rest(garageBenchURL + "Update");
             return RedirectToAction("Dashboard");
         }
@@ -131,16 +135,6 @@ namespace Cheque.Controllers
                 ViewBag.Min = JD["MinutesRemaining"];
                 ViewBag.Sec = JD["SecondsRemaining"];
                 ViewBag.RelayOne = JD["RelayOneStatus"];
-            }
-            else
-            {
-                ViewBag.Temp = "ERROR";
-                ViewBag.Humidity = "ERROR";
-                ViewBag.Pressure = "ERROR";
-                ViewBag.Hour = "ERROR";
-                ViewBag.Min = "ERROR";
-                ViewBag.Sec = "ERROR";
-                ViewBag.RelayOne = "ERROR";
             }
 
 
