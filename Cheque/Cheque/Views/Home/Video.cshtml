@@ -1,12 +1,19 @@
 ﻿@{
     ViewBag.Title = "Video";
 }
-<h1 class="lead">Baby's Room</h1>
 
-@if (Request.IsAuthenticated)
-{
-    if (User.Identity.Name == "adamdthomas@gmail.com")
-    {
-        <img src="http://thomasworkshop.com:88/CGIProxy.fcgi?cmd=snapPicture2&&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' width="640" height="360" alt='' />
-    }
-}
+<h1 class="lead">Videos</h1>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h4>Baby's Room</h4>
+        <br />
+        @if (Request.IsAuthenticated)
+        {
+            if (User.Identity.Name == "adamdthomas@gmail.com")
+            {
+                <img src="@ViewBag.URL:@ViewBag.Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.User&pwd=@ViewBag.Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)'  img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+            }
+        }
+    </div>
+</div>

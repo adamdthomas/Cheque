@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
+using Cheque.App_Start;
 
 namespace Cheque.Controllers
 {
@@ -25,6 +26,12 @@ namespace Cheque.Controllers
 
         public ActionResult Video()
         {
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+
+            ViewBag.URL = vidDictionary["cam1url"];
+            ViewBag.Port = vidDictionary["cam1port"];
+            ViewBag.User = vidDictionary["cam1user"];
+            ViewBag.Pass = vidDictionary["cam1pass"];
             return View();
         }
 
