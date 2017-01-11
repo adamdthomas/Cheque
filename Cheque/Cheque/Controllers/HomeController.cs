@@ -35,6 +35,29 @@ namespace Cheque.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Video(string str)
+        {
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+
+            ViewBag.URL = vidDictionary["cam1url"];
+            ViewBag.Port = vidDictionary["cam1port"];
+            ViewBag.User = vidDictionary["cam1user"];
+            ViewBag.Pass = vidDictionary["cam1pass"];
+            return View();
+        }
+
+
+        public ActionResult controlcam(string d)
+        {
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+
+            rest(vidDictionary["cam1url"] + ":" + vidDictionary["cam1port"] + @"/CGIProxy.fcgi?cmd=" + d + "&usr=" + vidDictionary["cam1user"]  + "&pwd=" + vidDictionary["cam1pass"], "none");
+            return RedirectToAction("Video");
+        }
+
+
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -55,7 +78,7 @@ namespace Cheque.Controllers
 
         public ActionResult Dashboard()
         {
-            rest(garageBenchURL + "Update");
+            rest(garageBenchURL + "Update", "Garage");
             ViewBag.Message = "";
             return View();
         }
@@ -63,7 +86,7 @@ namespace Cheque.Controllers
         [HttpPost]
         public ActionResult Dashboard(string min)
         {
-            rest(garageBenchURL + "addmin!" + min + "!");
+            rest(garageBenchURL + "addmin!" + min + "!", "Garage");
             ViewBag.Message = min + " Minutes Added";
             return RedirectToAction("Dashboard");
 
@@ -71,7 +94,7 @@ namespace Cheque.Controllers
 
         public ActionResult AddTime()
         {
-            rest(garageBenchURL + "H");
+            rest(garageBenchURL + "H", "Garage");
             ViewBag.Message = "15 Minutes Added";
 
             return RedirectToAction("Dashboard");
@@ -79,7 +102,7 @@ namespace Cheque.Controllers
 
         public ActionResult RemoveTime()
         {
-            rest(garageBenchURL + "L");
+            rest(garageBenchURL + "L", "Garage");
             ViewBag.Message = "Time Reset";
 
             return RedirectToAction("Dashboard");
@@ -87,11 +110,11 @@ namespace Cheque.Controllers
 
         public ActionResult Update()
         {
-            rest(garageBenchURL + "Update");
+            rest(garageBenchURL + "Update", "Garage");
             return RedirectToAction("Dashboard");
         }
 
-        private void rest(string uri)
+        private void rest(string uri, string domain)
         {
             string r = "";
             bool ok = false;
@@ -133,15 +156,25 @@ namespace Cheque.Controllers
 
             if (ok)
             {
-                Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
 
-                ViewBag.Temp = JD["Temp"];
-                ViewBag.Humidity = JD["Humidity"];
-                ViewBag.Pressure = JD["Pressure"];
-                ViewBag.Hour = JD["HourRemaining"];
-                ViewBag.Min = JD["MinutesRemaining"];
-                ViewBag.Sec = JD["SecondsRemaining"];
-                ViewBag.RelayOne = JD["RelayOneStatus"];
+                switch (domain.ToUpper())
+                {
+                    case "GARAGE":
+                        Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
+
+                        ViewBag.Temp = JD["Temp"];
+                        ViewBag.Humidity = JD["Humidity"];
+                        ViewBag.Pressure = JD["Pressure"];
+                        ViewBag.Hour = JD["HourRemaining"];
+                        ViewBag.Min = JD["MinutesRemaining"];
+                        ViewBag.Sec = JD["SecondsRemaining"];
+                        ViewBag.RelayOne = JD["RelayOneStatus"];
+
+                        break;
+                    default:
+                        break;
+                }
+               
             }
 
 
