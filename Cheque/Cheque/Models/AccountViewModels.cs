@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cheque.Models
+namespace HouseFly.Models
 {
     public class ExternalLoginConfirmationViewModel
     {

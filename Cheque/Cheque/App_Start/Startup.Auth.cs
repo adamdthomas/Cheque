@@ -5,9 +5,9 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
-using Cheque.Models;
+using HouseFly.Models;
 
-namespace Cheque
+namespace HouseFly
 {
     public partial class Startup
     {

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace Cheque
+namespace HouseFly
 {
     public class BundleConfig
     {

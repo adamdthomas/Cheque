@@ -6,9 +6,9 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Cheque.Models;
+using HouseFly.Models;
 
-namespace Cheque.Controllers
+namespace HouseFly.Controllers
 {
     [Authorize]
     public class ManageController : Controller

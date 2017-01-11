@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
-using Cheque.App_Start;
+using HouseFly.App_Start;
 
-namespace Cheque.Controllers
+namespace HouseFly.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(Cheque.Startup))]
-namespace Cheque
+[assembly: OwinStartupAttribute(typeof(HouseFly.Startup))]
+namespace HouseFly
 {
     public partial class Startup
     {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Cheque;
-using Cheque.Controllers;
+using HouseFly;
+using HouseFly.Controllers;
 
-namespace Cheque.Tests.Controllers
+namespace HouseFly.Tests.Controllers
 {
     [TestClass]
     public class HomeControllerTest

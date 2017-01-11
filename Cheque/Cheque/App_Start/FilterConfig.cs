@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Cheque
+namespace HouseFly
 {
     public class FilterConfig
     {
