@@ -8,36 +8,120 @@
     if (User.Identity.Name == "adamdthomas@gmail.com")
     {
 
+        <script>
+            function handleTime(rNum, time) {
+                    $.ajax({
+                        url: '@Url.Action("HandleTime", "home")',
+                        data: { relay: rNum ,time: time }
+                        
+                    });
+                }
+        </script>
+
         <h1 class="lead">Dashboard</h1>
 
         <div class="panel panel-default">
             <div class="panel-body">
                 <h4>Garage</h4>
                 <br />
+                <div class="row">
+                    <div class="col-xs-6">
+
+                        <form method="post">
+                            <div class="form-group">
+                                <label name="addMinInput">Add Minutes</label>
+                                <input class="form-control" type="number" name="min" placeholder="Min">
+                                <br />
+
+                                <label for="sel1">Outlet:</label>
+                                <select class="form-control" name="relay">
+                                    <option value="rOne">Outlet 1</option>
+                                    <option value="rTwo">Outlet 2</option>
+                                    <option value="rThree">Outlet 3</option>
+                                    <option value="rFour">Outlet 4</option>
+                                </select>
+                                <br />
+
+                                <button type="submit" class="btn btn-success">Submit</button>
+                                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
 
 
-                <form method="post">
-                    <div class="form-group">
-                        <label name="addMinInput">Add Minutes</label>
-                        <input type="text" class="form-control" name="min" placeholder="Min">
+
+                            </div>
+
+                        </form>
+
+                        <br />
+
+
                     </div>
-                    <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
-                    <a type="button" class="btn btn-default" href=@Url.Action("AddTime", "Home")>Add 15</a>
-                    <a type="button" class="btn btn-default" href=@Url.Action("RemoveTime", "Home")>Reset</a>
-                    <button type="submit" class="btn btn-success">Submit</button>
-                </form>
+                    <div class="col-xs-6">
+                        <p>Temperature: @ViewBag.Temp</p>
+                        <p>Humidity: @ViewBag.Humidity %</p>
+                        <p>Pressure: @ViewBag.Pressure hPa</p>
+                        <p>Outlet 1 Time: @ViewBag.rt1</p>
+                        <p>Outlet 2 Time: @ViewBag.rt2</p>
+                        <p>Outlet 3 Time: @ViewBag.rt3</p>
+                        <p>Outlet 4 Time: @ViewBag.rt4</p>
 
-                <br />
-                <br />
+                    </div>
+                </div>
 
-                <p>Temperature: @ViewBag.Temp %</p>
-                <p>Humidity: @ViewBag.Humidity</p>
-                <p>Pressure: @ViewBag.Pressure hPa</p>
-                <p>Time Remaining: @ViewBag.Hour:@ViewBag.Min:@ViewBag.Sec</p>
+                <div class="row" >
+                    <div class="col-xs-12" align="center">
 
-                <br />
-                <br />
-                <h3>@ViewBag.Message</h3>
+                        
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Add</th>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rOne','15')" onmousedown="handleTime('rOne','15')">1</a>
+                                     </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rTwo','15')" onmousedown="handleTime('rTwo','15')">2</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rThree','15')" onmousedown="handleTime('rThree','15')">3</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','15')" onmousedown="handleTime('rFour','15')">4</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','0')" onmousedown="handleTime('all','15')">All</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Clear</th>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rOne','0')" onmousedown="handleTime('rOne','0')">1</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rTwo','0')" onmousedown="handleTime('rTwo','0')">2</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rThree','0')" onmousedown="handleTime('rThree','0')">3</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','0')" onmousedown="handleTime('rFour','0')">4</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','0')" onmousedown="handleTime('all','0')">All</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+
+
+                        <br/>
+                        <br/>
+
+
+
+                    </div>
+                </div>
             </div>
         </div>
     }
