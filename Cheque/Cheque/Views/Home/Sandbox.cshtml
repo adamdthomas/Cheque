@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Sandbox";
+}
+<h2>@ViewBag.Title.</h2>
+
+
+<script>
+
+        window.onload = function () {
+        startTimer(5, document.querySelector('#relayone'));
+        startTimer(5, document.querySelector('#relaytwo'));
+        startTimer(60 * 31, document.querySelector('#relaythree'));
+        startTimer(60 * 61, document.querySelector('#relayfour'));
+    };
+</script>
+
+
+<div>Time 1 is up in <span id="relayone"></span> minutes!</div>
+<div>Time 1 is up in <span id="relaytwo"></span> minutes!</div>
+<div>Time 1 is up in <span id="relaythree"></span> minutes!</div>
+<div>Time 1 is up in <span id="relayfour"></span> minutes!</div>
+

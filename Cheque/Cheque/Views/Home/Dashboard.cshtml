@@ -9,13 +9,22 @@
     {
 
         <script>
-            function handleTime(rNum, time) {
-                    $.ajax({
-                        url: '@Url.Action("HandleTime", "home")',
-                        data: { relay: rNum ,time: time }
-                        
-                    });
-                }
+            window.onload = function () {
+
+            var r1 = new CountDownTimer(@ViewBag.rt1),
+                r2 = new CountDownTimer(@ViewBag.rt2),
+                r3 = new CountDownTimer(@ViewBag.rt3),
+                r4 = new CountDownTimer(@ViewBag.rt4);
+
+            r1.onTick(format(document.querySelector('#relayone'))).start();
+            r2.onTick(format(document.querySelector('#relaytwo'))).start();
+            r3.onTick(format(document.querySelector('#relaythree'))).start();
+            r4.onTick(format(document.querySelector('#relayfour'))).start();
+
+           
+
+            };
+
         </script>
 
         <h1 class="lead">Dashboard</h1>
@@ -39,11 +48,14 @@
                                     <option value="rTwo">Outlet 2</option>
                                     <option value="rThree">Outlet 3</option>
                                     <option value="rFour">Outlet 4</option>
+                                    <option value="all">All</option>
                                 </select>
                                 <br />
 
                                 <button type="submit" class="btn btn-success">Submit</button>
-                                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
+                                <br />
+                                <br />
+                                 <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
 
 
 
@@ -59,10 +71,10 @@
                         <p>Temperature: @ViewBag.Temp</p>
                         <p>Humidity: @ViewBag.Humidity %</p>
                         <p>Pressure: @ViewBag.Pressure hPa</p>
-                        <p>Outlet 1 Time: @ViewBag.rt1</p>
-                        <p>Outlet 2 Time: @ViewBag.rt2</p>
-                        <p>Outlet 3 Time: @ViewBag.rt3</p>
-                        <p>Outlet 4 Time: @ViewBag.rt4</p>
+                        <p>1: <span id="relayone"></span></p>
+                        <p>2: <span id="relaytwo"></span></p>
+                        <p>3: <span id="relaythree"></span></p>
+                        <p>4: <span id="relayfour"></span></p>
 
                     </div>
                 </div>
@@ -76,53 +88,103 @@
                                 <tr>
                                     <th scope="row">Add</th>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rOne','15')" onmousedown="handleTime('rOne','15')">1</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "15" })>1</a>
                                      </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rTwo','15')" onmousedown="handleTime('rTwo','15')">2</a>
+                                       <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "15" })>2</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rThree','15')" onmousedown="handleTime('rThree','15')">3</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rThree", time = "15" })>3</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','15')" onmousedown="handleTime('rFour','15')">4</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rFour", time = "15" })>4</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','0')" onmousedown="handleTime('all','15')">All</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "15" })>All</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Clear</th>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rOne','0')" onmousedown="handleTime('rOne','0')">1</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "0" })>1</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rTwo','0')" onmousedown="handleTime('rTwo','0')">2</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "0" })>2</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rThree','0')" onmousedown="handleTime('rThree','0')">3</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rThree", time = "0" })>3</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','0')" onmousedown="handleTime('rFour','0')">4</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rFour", time = "0" })>4</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" ontouchstart="handleTime('rFour','0')" onmousedown="handleTime('all','0')">All</a>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "0" })>All</a>
                                     </td>
                                 </tr>
                             </tbody>
-
                         </table>
-
-
-
-                        <br/>
-                        <br/>
-
-
-
                     </div>
                 </div>
-            </div>
+
+
+                <script>
+                function directCam(d, camName) {
+                    $.ajax({
+                        url: '@Url.Action("controlcam", "home")',
+                        data: { d: d, camName: camName}
+                    });
+                }
+                </script>
+
+
+                    <br />
+                    <button data-toggle="collapse" class="btn btn-default" data-target="#sc">Video</button>
+                    <br />
+                    <br />
+                    <div id="sc" class="collapse">
+                        <div class="panel-body">
+
+                            <br />
+
+                            <img src="@ViewBag.cam2URL:@ViewBag.cam2Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.cam2User&pwd=@ViewBag.cam2Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+
+                            <br />
+                            <br />
+                            <div align="center">
+                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveUp', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveUp', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                    <span class="glyphicon glyphicon-arrow-up" />
+                                </button>
+
+                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveLeft', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveLeft', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                    <span class="glyphicon glyphicon-arrow-left" />
+                                </button>
+
+                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveRight', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveRight', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                    <span class="glyphicon glyphicon-arrow-right" />
+                                </button>
+
+                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveDown', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveDown', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                    <span class="glyphicon glyphicon-arrow-down" />
+                                </button>
+                            </div>
+                            <br />
+                            <div align="center">
+                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('zoomIn', 'cam2')" ontouchend="directCam('zoomStop', 'cam2')" onmousedown="directCam('zoomIn', 'cam2')" onmouseup="directCam('zoomStop', 'cam2')">
+                                    <span class="glyphicon glyphicon-zoom-in" />
+                                </button>
+
+                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('zoomOut', 'cam2')" ontouchend="directCam('zoomStop', 'cam2')" onmousedown="directCam('zoomOut', 'cam2')" onmouseup="directCam('zoomStop', 'cam2')">
+                                    <span class="glyphicon glyphicon-zoom-out" />
+                                </button>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
         </div>
     }
 }

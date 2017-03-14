@@ -1,14 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
@@ -29,10 +21,15 @@ namespace HouseFly.Controllers
         {
             Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
 
-            ViewBag.URL = vidDictionary["cam1url"];
-            ViewBag.Port = vidDictionary["cam1port"];
-            ViewBag.User = vidDictionary["cam1user"];
-            ViewBag.Pass = vidDictionary["cam1pass"];
+            ViewBag.cam1URL = vidDictionary["cam1url"];
+            ViewBag.cam1Port = vidDictionary["cam1port"];
+            ViewBag.cam1User = vidDictionary["cam1user"];
+            ViewBag.cam1Pass = vidDictionary["cam1pass"];
+
+            ViewBag.cam2URL = vidDictionary["cam2url"];
+            ViewBag.cam2Port = vidDictionary["cam2port"];
+            ViewBag.cam2User = vidDictionary["cam2user"];
+            ViewBag.cam2Pass = vidDictionary["cam2pass"];
             return View();
         }
 
@@ -50,11 +47,11 @@ namespace HouseFly.Controllers
         }
 
 
-        public ActionResult controlcam(string d)
+        public ActionResult controlcam(string d, string camName)
         {
             Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
 
-            rest(vidDictionary["cam1url"] + ":" + vidDictionary["cam1port"] + @"/CGIProxy.fcgi?cmd=" + d + "&usr=" + vidDictionary["cam1user"]  + "&pwd=" + vidDictionary["cam1pass"], "none");
+            rest(vidDictionary[camName + "url"] + ":" + vidDictionary[camName + "port"] + @"/CGIProxy.fcgi?cmd=" + d + "&usr=" + vidDictionary[camName + "user"]  + "&pwd=" + vidDictionary[camName + "pass"], "none");
             return RedirectToAction("Video");
         }
 
@@ -63,8 +60,14 @@ namespace HouseFly.Controllers
             ViewBag.Message = "Your application description page.";
             return View();
         }
-  
-        public ActionResult Time()
+
+        public ActionResult Sandbox()
+        {
+            ViewBag.timeone = 12;
+            return View();
+        }
+
+        public ActionResult Time(int? type)
         {
             return Json(new { time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}, JsonRequestBehavior.AllowGet);
         }
@@ -77,6 +80,19 @@ namespace HouseFly.Controllers
 
         public ActionResult Dashboard()
         {
+
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+
+            ViewBag.cam1URL = vidDictionary["cam1url"];
+            ViewBag.cam1Port = vidDictionary["cam1port"];
+            ViewBag.cam1User = vidDictionary["cam1user"];
+            ViewBag.cam1Pass = vidDictionary["cam1pass"];
+
+            ViewBag.cam2URL = vidDictionary["cam2url"];
+            ViewBag.cam2Port = vidDictionary["cam2port"];
+            ViewBag.cam2User = vidDictionary["cam2user"];
+            ViewBag.cam2Pass = vidDictionary["cam2pass"];
+
             rest(garageBenchURL + "Update", "Garage");
             ViewBag.Message = "";
             return View();
@@ -108,7 +124,7 @@ namespace HouseFly.Controllers
                 time = (int.Parse(time) * 60000).ToString();
                 rest(garageBenchURL + "time!" + time + "!" + relay + "!", "Garage");
                 ViewBag.Message = time + " Minutes Added";
-
+                System.Threading.Thread.Sleep(1000);
             }
             catch (Exception)
             {
@@ -118,21 +134,6 @@ namespace HouseFly.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        public ActionResult AddTime(string rnum)
-        {
-            rest(garageBenchURL + "H", "Garage");
-            ViewBag.Message = "15 Minutes Added";
-
-            return RedirectToAction("Dashboard");
-        }
-
-        public ActionResult RemoveTime()
-        {
-            rest(garageBenchURL + "L", "Garage");
-            ViewBag.Message = "Time Reset";
-
-            return RedirectToAction("Dashboard");
-        }
 
         public ActionResult Update()
         {
@@ -195,10 +196,10 @@ namespace HouseFly.Controllers
                         ViewBag.Min = JD["MinutesRemaining"];
                         ViewBag.Sec = JD["SecondsRemaining"];
 
-                        ViewBag.r1t = Utilities.MilisToClock(JD["r1t"]);
-                        ViewBag.r2t = Utilities.MilisToClock(JD["r2t"]);
-                        ViewBag.r3t = Utilities.MilisToClock(JD["r3t"]);
-                        ViewBag.r4t = Utilities.MilisToClock(JD["r4t"]);
+                        ViewBag.rt1 = Utilities.ToSec(JD["r1t"]);
+                        ViewBag.rt2 = Utilities.ToSec(JD["r2t"]);
+                        ViewBag.rt3 = Utilities.ToSec(JD["r3t"]);
+                        ViewBag.rt4 = Utilities.ToSec(JD["r4t"]);
 
 
 

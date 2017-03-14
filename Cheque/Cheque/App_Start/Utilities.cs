@@ -24,6 +24,17 @@ namespace HouseFly.App_Start
             return dicConfig;
         }
 
+        public static int ToSec(string milliseconds)
+        {
+            int iMillis = int.Parse(milliseconds);
+            int secLeft = iMillis / 1000;
+            if (secLeft < 0 )
+            {
+                secLeft = 0;
+            }
+            return secLeft;
+        }
+
         public static string MilisToClock(string milliseconds)
         {
             int iMillis = int.Parse(milliseconds);
