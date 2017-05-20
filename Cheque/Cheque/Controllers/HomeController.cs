@@ -100,7 +100,7 @@ namespace HouseFly.Controllers
             ViewBag.cam2Pass = vidDictionary["cam2pass"];
 
             rest(garageBenchURL + "Update", "GarageBench");
-            rest(garageBenchURL + "Update", "GarageDoor");
+            rest(garageDoorURL + "Update", "GarageDoor");
             ViewBag.Message = "";
             return View();
         }
