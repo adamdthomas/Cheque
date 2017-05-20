@@ -11,14 +11,12 @@ namespace HouseFly.App_Start
         public static Dictionary<string,string> GetConfigData()
         {
             Dictionary<string, string> dicConfig = new Dictionary<string, string>();
-            System.Collections.Generic.IEnumerable<String> lines = File.ReadLines(@"C:\FTP\www\config.txt");
+            System.Collections.Generic.IEnumerable<String> lines = File.ReadLines(@"C:\FTP\Config\camcreds.txt");
 
             foreach (var item in lines)
             {
                 string[] KeyPair = item.Split('=');
                 dicConfig.Add(KeyPair[0], KeyPair[1]);
- 
-
             }
 
             return dicConfig;

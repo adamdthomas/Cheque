@@ -29,5 +29,7 @@ namespace HouseFly.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<HouseFly.Models.TempModels> TempModels { get; set; }
     }
 }
