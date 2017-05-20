@@ -150,10 +150,10 @@ namespace HouseFly.Controllers
                 switch (Direction.ToUpper())
                 {
                     case "OPEN":
-                        rest(garageBenchURL + "GarageDoor/Open", "GarageDoor");
+                        rest(garageDoorURL + "GarageDoor/Open", "GarageDoor");
                         break;
                     case "CLOSE":
-                        rest(garageBenchURL + "GarageDoor/Close", "GarageDoor");
+                        rest(garageDoorURL + "GarageDoor/Close", "GarageDoor");
                         break;
                     default:
                         break;
