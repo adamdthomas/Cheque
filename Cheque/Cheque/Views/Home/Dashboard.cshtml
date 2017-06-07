@@ -2,7 +2,6 @@
     ViewBag.Title = "Dashboard";
     ViewBag.homestat = "Test sat";
 }
-
 @if (Request.IsAuthenticated)
 {
     if (User.Identity.Name == "adamdthomas@gmail.com")
@@ -11,15 +10,21 @@
         <script>
             window.onload = function () {
 
-            var r1 = new CountDownTimer(@ViewBag.rt1),
-                r2 = new CountDownTimer(@ViewBag.rt2),
-                r3 = new CountDownTimer(@ViewBag.rt3),
-                r4 = new CountDownTimer(@ViewBag.rt4);
+                var r1 = new CountDownTimer(@ViewBag.rt1),
+                    r2 = new CountDownTimer(@ViewBag.rt2),
+                    r3 = new CountDownTimer(@ViewBag.rt3),
+                    r4 = new CountDownTimer(@ViewBag.rt4);
+
+                rp1 = new CountDownTimer(@ViewBag.rpt1);
+                rp2 = new CountDownTimer(@ViewBag.rpt2);
 
                 r1.onTick(format(document.querySelector('#relayone'))).start();
                 r2.onTick(format(document.querySelector('#relaytwo'))).start();
                 r3.onTick(format(document.querySelector('#relaythree'))).start();
                 r4.onTick(format(document.querySelector('#relayfour'))).start();
+
+                rp1.onTick(format(document.querySelector('#porchrelayone'))).start();
+                rp2.onTick(format(document.querySelector('#porchrelaytwo'))).start();
 
             };
 
@@ -33,15 +38,13 @@
                 <br />
                 <div class="row">
                     <div class="col-xs-6">
-
                         <!--Drop down list for individual relays and custom time-->
                         <form method="post">
                             <div class="form-group">
                                 <label name="addMinInput">Add Minutes</label>
-                                <label name="domain" value="garageBench"></label>
+                                <input type="hidden" name="domain" value="porchLights" />
                                 <input class="form-control" type="number" name="min" placeholder="Min">
                                 <br />
-
                                 <label for="sel1">Outlet:</label>
                                 <select class="form-control" name="relay">
                                     <option value="rOne">Outlet 1</option>
@@ -51,11 +54,10 @@
                                     <option value="all">All</option>
                                 </select>
                                 <br />
-
                                 <button type="submit" class="btn btn-success">Submit</button>
                                 <br />
                                 <br />
-                                 <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
+                                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
                             </div>
                         </form>
                         <br />
@@ -71,7 +73,7 @@
                         <p>4: <span id="relayfour"></span></p>
                     </div>
                 </div>
-                <div class="row" >
+                <div class="row">
                     <div class="col-xs-12" align="center">
                         <table class="table">
                             <tbody>
@@ -111,82 +113,144 @@
                                         <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "0", domain = "garageBench" })>All</a>
                                     </td>
                                 </tr>
-    
+
                             </tbody>
                         </table>
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">Garage Door</th>
-                                        <td>
-                                            <a type="button" class="btn btn-default" href=@Url.Action("HandleDoor", "Home", new { Direction = "Open", Notes = "FromHF" })>Open</a>
-                                        </td>
-                                        <td>
-                                            <a type="button" class="btn btn-default" href=@Url.Action("HandleDoor", "Home", new { Direction = "Close", Notes = "FromHF" })>Close</a>
-                                        </td>
-                                     </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Garage Door</th>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleDoor", "Home", new { Direction = "Open", Notes = "FromHF" })>Open</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleDoor", "Home", new { Direction = "Close", Notes = "FromHF" })>Close</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
 
-
-                    <script>
+                <script>
                     function directCam(d, camName) {
                         $.ajax({
                             url: '@Url.Action("controlcam", "home")',
                             data: { d: d, camName: camName}
                         });
                     }
-                    </script>
+                </script>
 
-
-                    <br />
-                    <button data-toggle="collapse" class="btn btn-default" data-target="#sc">Video</button>
-                    <br />
-                    <br />
-                    <div id="sc" class="collapse">
-                        <div class="panel-body">
-
-                            <br />
-
-                            <img src="@ViewBag.cam2URL:@ViewBag.cam2Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.cam2User&pwd=@ViewBag.cam2Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
-                            <br />
-                            <br />
-                            <div align="center">
-                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveUp', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveUp', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
-                                    <span class="glyphicon glyphicon-arrow-up" />
-                                </button>
-
-                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveLeft', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveLeft', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
-                                    <span class="glyphicon glyphicon-arrow-left" />
-                                </button>
-
-                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveRight', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveRight', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
-                                    <span class="glyphicon glyphicon-arrow-right" />
-                                </button>
-
-                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveDown', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveDown', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
-                                    <span class="glyphicon glyphicon-arrow-down" />
-                                </button>
-                            </div>
-                            <br />
-                            <div align="center">
-                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('zoomIn', 'cam2')" ontouchend="directCam('zoomStop', 'cam2')" onmousedown="directCam('zoomIn', 'cam2')" onmouseup="directCam('zoomStop', 'cam2')">
-                                    <span class="glyphicon glyphicon-zoom-in" />
-                                </button>
-
-                                <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('zoomOut', 'cam2')" ontouchend="directCam('zoomStop', 'cam2')" onmousedown="directCam('zoomOut', 'cam2')" onmouseup="directCam('zoomStop', 'cam2')">
-                                    <span class="glyphicon glyphicon-zoom-out" />
-                                </button>
-                            </div>
+                <br />
+                <button data-toggle="collapse" class="btn btn-default" data-target="#sc">Video</button>
+                <br />
+                <br />
+                <div id="sc" class="collapse">
+                    <div class="panel-body">
+                        <br />
+                        <img src="@ViewBag.cam2URL:@ViewBag.cam2Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.cam2User&pwd=@ViewBag.cam2Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+                        <br />
+                        <br />
+                        <div align="center">
+                            <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveUp', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveUp', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                <span class="glyphicon glyphicon-arrow-up" />
+                            </button>
+                            <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveLeft', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveLeft', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                <span class="glyphicon glyphicon-arrow-left" />
+                            </button>
+                            <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveRight', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveRight', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                <span class="glyphicon glyphicon-arrow-right" />
+                            </button>
+                            <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('ptzMoveDown', 'cam2')" ontouchend="directCam('ptzStopRun', 'cam2')" onmousedown="directCam('ptzMoveDown', 'cam2')" onmouseup="directCam('ptzStopRun', 'cam2')">
+                                <span class="glyphicon glyphicon-arrow-down" />
+                            </button>
+                        </div>
+                        <br />
+                        <div align="center">
+                            <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('zoomIn', 'cam2')" ontouchend="directCam('zoomStop', 'cam2')" onmousedown="directCam('zoomIn', 'cam2')" onmouseup="directCam('zoomStop', 'cam2')">
+                                <span class="glyphicon glyphicon-zoom-in" />
+                            </button>
+                            <button type="button" class="btn btn-default btn-lg" ontouchstart="directCam('zoomOut', 'cam2')" ontouchend="directCam('zoomStop', 'cam2')" onmousedown="directCam('zoomOut', 'cam2')" onmouseup="directCam('zoomStop', 'cam2')">
+                                <span class="glyphicon glyphicon-zoom-out" />
+                            </button>
                         </div>
                     </div>
-
-
                 </div>
 
+            </div>
         </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>Porch</h4>
+                <br />
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <!--Drop down list for individual relays and custom time-->
+                        <form method="post">
+                            <div class="form-group">
+                                <label name="addMinInput">Add Minutes</label>
+                                <input type="hidden" name="domain" value="porchLights" />
+                                <input class="form-control" type="number" name="min" placeholder="Min">
+                                <br />
+                                <label for="sel1">Outlet:</label>
+                                <select class="form-control" name="relay">
+                                    <option value="rOne">Outlet 1</option>
+                                    <option value="rTwo">Outlet 2</option>
+                                    <option value="all">All</option>
+                                </select>
+                                <br />
+                                <button type="submit" class="btn btn-success">Submit</button>
+                                <br />
+                                <br />
+                                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
+                            </div>
+                        </form>
+                        <br />
+                    </div>
+                    <div class="col-xs-6">
+                        <p>1: <span id="porchrelayone"></span></p>
+                        <p>2: <span id="porchrelaytwo"></span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12" align="center">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Add</th>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "60", domain = "porchLights" })>1</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "60", domain = "porchLights" })>2</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "60", domain = "porchLights" })>All</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Clear</th>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "0", domain = "porchLights" })>1</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "0", domain = "porchLights" })>2</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "0", domain = "porchLights" })>All</a>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+           </div>
+       </div>
+
     }
 }
 

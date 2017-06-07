@@ -11,7 +11,6 @@ namespace HouseFly.Controllers
     public class HomeController : Controller
     {
 
-        //private string garageBenchURL = @"http://10.238.243.174/";
         public ActionResult Index()
         {
             return View();
@@ -136,8 +135,8 @@ namespace HouseFly.Controllers
             ViewBag.cam2User = vidDictionary["cam2user"];
             ViewBag.cam2Pass = vidDictionary["cam2pass"];
 
-            rest(Utilities.garageBenchURL + "Update", "GarageBench");
-            rest(Utilities.garageDoorURL + "Update", "GarageDoor");
+            rest("Update", "GarageBench");
+            rest("Update", "GarageDoor");
             ViewBag.Message = "";
             return View();
         }
@@ -149,7 +148,7 @@ namespace HouseFly.Controllers
             try
             {
                 min = (int.Parse(min) * 60000).ToString();
-                rest(Utilities.garageBenchURL + "time!" + min + "!" + relay + "!", "GarageBench");
+                rest("time!" + min + "!" + relay + "!", "GarageBench");
                 ViewBag.Message = min + " Minutes Added";
                
             }
@@ -167,7 +166,7 @@ namespace HouseFly.Controllers
             try
             {
                 time = (int.Parse(time) * 60000).ToString();
-                rest(Utilities.garageBenchURL + "time!" + time + "!" + relay + "!", "GarageBench");
+                rest("time!" + time + "!" + relay + "!", "GarageBench");
                 ViewBag.Message = time + " Minutes Added";
                 System.Threading.Thread.Sleep(1000);
             }
@@ -187,10 +186,10 @@ namespace HouseFly.Controllers
                 switch (Direction.ToUpper())
                 {
                     case "OPEN":
-                        rest(Utilities.garageDoorURL + "GarageDoor/Open", "GarageDoor");
+                        rest("GarageDoor/Open", "GarageDoor");
                         break;
                     case "CLOSE":
-                        rest(Utilities.garageDoorURL + "GarageDoor/Close", "GarageDoor");
+                        rest("GarageDoor/Close", "GarageDoor");
                         break;
                     default:
                         break;
@@ -208,59 +207,46 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult Update()
         {
-            rest(Utilities.garageBenchURL + "Update", "GarageBench");
-            rest(Utilities.garageDoorURL + "Update", "GarageDoor");
+            rest("Update", "GarageBench");
+            rest("Update", "GarageDoor");
             return RedirectToAction("Dashboard");
         }
 
         [Authorize(Users = "adamdthomas@gmail.com")]
         private void rest(string uri, string domain)
         {
-            string r = "";
-            bool ok = true;
+            Dictionary<string, string> JD = null;
 
-            if (Request.IsAuthenticated)
+            try
             {
-                if (User.Identity.Name == "adamdthomas@gmail.com")
-                {
-                    r = Utilities.rest(uri);
-                }
-                else
-                {
-                    r = "You are unauthorized to view this service.";
-                }
-
-            }
-            else
-            {
-                r = "You must be authenticated to view this service.";
-            }
-
-            if (ok)
-            {
-
+                string r = "";
                 switch (domain.ToUpper())
                 {
                     case "GARAGEBENCH":
-                        Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
-
+                        r = Utilities.rest(Utilities.garageBenchURL + uri);
+                        JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
                         ViewBag.Temp = JD["Temp"];
                         ViewBag.Humidity = JD["Humidity"];
                         ViewBag.Pressure = JD["Pressure"];
                         ViewBag.Hour = JD["HourRemaining"];
                         ViewBag.Min = JD["MinutesRemaining"];
                         ViewBag.Sec = JD["SecondsRemaining"];
-
                         ViewBag.rt1 = Utilities.ToSec(JD["r1t"]);
                         ViewBag.rt2 = Utilities.ToSec(JD["r2t"]);
                         ViewBag.rt3 = Utilities.ToSec(JD["r3t"]);
                         ViewBag.rt4 = Utilities.ToSec(JD["r4t"]);
-
+                        break;
+                    case "PORCHLIGHTS":
+                        r = Utilities.rest(Utilities.porchLightsURL + uri);
+                        JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
+                        ViewBag.rpt1 = Utilities.ToSec(JD["r1t"]);
+                        ViewBag.rpt2 = Utilities.ToSec(JD["r2t"]);
                         break;
                     case "GARAGEDOOR":
-                        Dictionary<string, string> JDD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
+                        r = Utilities.rest(Utilities.garageDoorURL + uri);
+                        JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
                         string doorStat;
-                        if (JDD["DoorOpened"].ToUpper() == "TRUE")
+                        if (JD["DoorOpened"].ToUpper() == "TRUE")
                         {
                             doorStat = "Opened";
                         }
@@ -270,15 +256,17 @@ namespace HouseFly.Controllers
                         }
 
                         ViewBag.GarageDoor = doorStat;
-                        ViewBag.GarageDoorNotes = JDD["Notes"];
+                        ViewBag.GarageDoorNotes = JD["Notes"];
                         break;
                     default:
+                        r = Utilities.rest(uri);
                         break;
                 }
-               
             }
-
-
+            catch (Exception)
+            {
+               throw;
+            }
         }
     }
 }
