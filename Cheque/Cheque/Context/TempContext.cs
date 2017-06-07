@@ -9,6 +9,10 @@ namespace HouseFly.Context
 {
     public class TempContext : DbContext 
     {
+        public TempContext()
+        : base("DefaultConnection")
+        {
+        }
         public DbSet<TempModels> TempModels { get; set; }
     }
 }

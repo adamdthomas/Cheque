@@ -1,22 +1,38 @@
-﻿@{
-    ViewBag.Title = "Sandbox";
-}
-<h2>@ViewBag.Title.</h2>
+﻿
+
+@if (Request.IsAuthenticated)
+{
+    if (User.Identity.Name == "adamdthomas@gmail.com")
+    {
+        <br/>
+        <br />
+        <br />
+        
+        <p> Running: @ViewBag.isRunning </p>
+        <p> Success Count: @ViewBag.runCount </p>
+        <p> Error Count: @ViewBag.errorCount </p>
+
+        <div class="row">
+            <div class="col-xs-2" align="center">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">KeepAlive:</th>
+                            <td>
+                                <a type="button" class="btn btn-default" href=@Url.Action("SandBoxHandler", "Home", new { command = "RUNCHECKER", arg = "TRUE" })>Start</a>
+                            </td>
+                            <td>
+                                <a type="button" class="btn btn-default" href=@Url.Action("SandBoxHandler", "Home", new { command = "RUNCHECKER", arg = "FALSE" })>Stop</a>
+                            </td>
+                            <td>
+                                <a type="button" class="btn btn-default" href=@Url.Action("SandBoxHandler", "Home", new { command = "GENERAL", arg = "CLEAR" })>Clear</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
 
-<script>
-
-        window.onload = function () {
-        startTimer(5, document.querySelector('#relayone'));
-        startTimer(5, document.querySelector('#relaytwo'));
-        startTimer(60 * 31, document.querySelector('#relaythree'));
-        startTimer(60 * 61, document.querySelector('#relayfour'));
-    };
-</script>
-
-
-<div>Time 1 is up in <span id="relayone"></span> minutes!</div>
-<div>Time 1 is up in <span id="relaytwo"></span> minutes!</div>
-<div>Time 1 is up in <span id="relaythree"></span> minutes!</div>
-<div>Time 1 is up in <span id="relayfour"></span> minutes!</div>
-
+                            }
+                            }

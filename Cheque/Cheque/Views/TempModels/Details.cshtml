@@ -1,0 +1,58 @@
+﻿@model HouseFly.Models.TempModels
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TempModels</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Domain)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Domain)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Temp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Temp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pressure)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pressure)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Humidity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Humidity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.TempId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

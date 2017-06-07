@@ -13,6 +13,7 @@ namespace HouseFly.Controllers
 {
     public class TempModelsController : Controller
     {
+      
         private TempContext db = new TempContext();
 
         // GET: TempModels
@@ -57,6 +58,15 @@ namespace HouseFly.Controllers
             }
 
             return View(tempModels);
+        }
+
+        public void CreateInternal(TempModels tempModels)
+        {
+            if (ModelState.IsValid)
+            {
+                db.TempModels.Add(tempModels);
+                db.SaveChanges();
+            }
         }
 
         // GET: TempModels/Edit/5

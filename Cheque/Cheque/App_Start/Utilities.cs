@@ -1,26 +1,120 @@
-﻿using System;
+﻿using HouseFly.Context;
+using HouseFly.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Web;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using HouseFly.Controllers;
 
 namespace HouseFly.App_Start
 {
     public static class Utilities
     {
-        public static Dictionary<string,string> GetConfigData()
-        {
-            Dictionary<string, string> dicConfig = new Dictionary<string, string>();
-            System.Collections.Generic.IEnumerable<String> lines = File.ReadLines(@"C:\FTP\Config\camcreds.txt");
+        public static string garageBenchURL = @"http://192.168.1.18/";
+        public static string garageDoorURL = @"http://192.168.1.19/";
+        private static TempContext db;
+        public static string backgroundProcessIsRunning = "";
+        private static bool isRunning = false;
+        public static int runCount = 0;
+        public static int errorCount = 0;
+        private static Thread bp;
+        private static int pause = 500000;
 
-            foreach (var item in lines)
+
+
+        public static void backgroundProcess(bool shouldRun)
+        {
+            if (shouldRun)
             {
-                string[] KeyPair = item.Split('=');
-                dicConfig.Add(KeyPair[0], KeyPair[1]);
+                backgroundProcessIsRunning = "True";
+                isRunning = true;
+                try
+                {
+                    bp = new Thread(backgroundProcess);
+                    bp.Start();
+                }
+                catch (Exception)
+                {
+                }
+            }
+            else
+            {
+                isRunning = false;
+                backgroundProcessIsRunning = "True";
+            }
+        }
+
+        static void backgroundProcess()
+        {
+            Thread.CurrentThread.IsBackground = true;
+            while (isRunning)
+            {
+                string r = rest(garageBenchURL + "update");
+                Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
+                TempModels tempModel = new TempModels();
+                        
+
+                tempModel.Domain = "Garage";
+                tempModel.Humidity = decimal.Parse(JD["Humidity"]);
+                tempModel.Temp = decimal.Parse(JD["Temp"]);
+                tempModel.Pressure = decimal.Parse(JD["Pressure"]);
+                tempModel.TimeStamp = DateTime.Now.ToString();
+
+                TempModelsController tmc = new TempModelsController();
+                tmc.CreateInternal(tempModel);
+                
+
+
+                Thread.Sleep(pause);
+            }
+        }
+
+        public static string rest(string url) {
+ 
+            string r = "";
+            bool ok = false;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream resStream = response.GetResponseStream();
+
+                StreamReader reader = new StreamReader(resStream);
+
+                r = reader.ReadToEnd();
+                ok = true;
+                runCount++;
+            }
+            catch (Exception)
+            {
+                errorCount++;
+                ok = false;
             }
 
-            return dicConfig;
+            return r;
         }
+        public static Dictionary<string,string> GetConfigData()
+                {
+                    Dictionary<string, string> dicConfig = new Dictionary<string, string>();
+                    System.Collections.Generic.IEnumerable<String> lines = File.ReadLines(@"C:\FTP\Config\camcreds.txt");
+
+                    foreach (var item in lines)
+                    {
+                        string[] KeyPair = item.Split('=');
+                        dicConfig.Add(KeyPair[0], KeyPair[1]);
+                    }
+
+                    return dicConfig;
+                }
 
         public static int ToSec(string milliseconds)
         {
