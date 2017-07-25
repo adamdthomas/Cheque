@@ -317,6 +317,7 @@
     <Content Include="Views\TempModels\Details.cshtml" />
     <Content Include="Views\TempModels\Edit.cshtml" />
     <Content Include="Views\TempModels\Delete.cshtml" />
+    <Content Include="Views\Home\Porch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -137,6 +137,7 @@ namespace HouseFly.Controllers
 
             rest("Update", "GarageBench");
             rest("Update", "GarageDoor");
+            rest("Update", "PORCHLIGHTS");
             ViewBag.Message = "";
             return View();
         }
@@ -166,7 +167,7 @@ namespace HouseFly.Controllers
             try
             {
                 time = (int.Parse(time) * 60000).ToString();
-                rest("time!" + time + "!" + relay + "!", "GarageBench");
+                rest("time!" + time + "!" + relay + "!", domain);
                 ViewBag.Message = time + " Minutes Added";
                 System.Threading.Thread.Sleep(1000);
             }
@@ -209,6 +210,7 @@ namespace HouseFly.Controllers
         {
             rest("Update", "GarageBench");
             rest("Update", "GarageDoor");
+            rest("Update", "PORCHLIGHTS");
             return RedirectToAction("Dashboard");
         }
 
@@ -265,7 +267,7 @@ namespace HouseFly.Controllers
             }
             catch (Exception)
             {
-               throw;
+           
             }
         }
     }

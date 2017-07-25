@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.homestat = "Test sat";
+}
+@if (Request.IsAuthenticated)
+{
+    if (User.Identity.Name == "adamdthomas@gmail.com")
+    {
+        <!--Script for individual relay countdown timers-->
+        <script>
+            window.onload = function () {
+
+                var rp1 = new CountDownTimer(@ViewBag.rpt1);
+                    rp2 = new CountDownTimer(@ViewBag.rpt2);
+
+                rp1.onTick(format(document.querySelector('#porchrelayone'))).start();
+                rp2.onTick(format(document.querySelector('#porchrelaytwo'))).start();
+
+            };
+
+        </script>
+
+  
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>Porch</h4>
+                <br />
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <!--Drop down list for individual relays and custom time-->
+                        <form method="post">
+                            <div class="form-group">
+                                <label name="addMinInput">Add Minutes</label>
+                                <input type="hidden" name="domain" value="porchLights" />
+                                <input class="form-control" type="number" name="min" placeholder="Min">
+                                <br />
+                                <label for="sel1">Outlet:</label>
+                                <select class="form-control" name="relay">
+                                    <option value="rOne">Outlet 1</option>
+                                    <option value="rTwo">Outlet 2</option>
+                                    <option value="all">All</option>
+                                </select>
+                                <br />
+                                <button type="submit" class="btn btn-success">Submit</button>
+                                <br />
+                                <br />
+                                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
+                            </div>
+                        </form>
+                        <br />
+                    </div>
+                    <div class="col-xs-6">
+                        <p>1: <span id="porchrelayone"></span></p>
+                        <p>2: <span id="porchrelaytwo"></span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12" align="center">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Add</th>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "60", domain = "porchLights" })>1</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "60", domain = "porchLights" })>2</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "60", domain = "porchLights" })>All</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Clear</th>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "0", domain = "porchLights" })>1</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "0", domain = "porchLights" })>2</a>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "0", domain = "porchLights" })>All</a>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+           </div>
+       </div>
+
+    }
+}
+

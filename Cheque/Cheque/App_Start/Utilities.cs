@@ -21,7 +21,7 @@ namespace HouseFly.App_Start
     {
         public static string garageBenchURL = @"http://192.168.1.18/";
         public static string garageDoorURL = @"http://192.168.1.19/";
-        public static string porchLightsURL = @"http://192.168.1.20";
+        public static string porchLightsURL = @"http://192.168.1.20/";
 
         private static TempContext db;
         public static string backgroundProcessIsRunning = "";
