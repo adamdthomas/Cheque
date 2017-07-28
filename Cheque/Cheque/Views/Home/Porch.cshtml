@@ -1,7 +1,7 @@
 ﻿@{
-    ViewBag.Title = "Dashboard";
-    ViewBag.homestat = "Test sat";
+    ViewBag.Title = "Porch";
 }
+
 @if (Request.IsAuthenticated)
 {
     if (User.Identity.Name == "adamdthomas@gmail.com")
@@ -21,8 +21,6 @@
         </script>
 
         <h1 class="lead">Porch</h1>
-
-        
              <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="row">
@@ -64,7 +62,7 @@
                                                 <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "60", domain = "Porch" })>1</a>
                                             </td>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "60", domain = "Porch" })>2</a>
+                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "5", domain = "Porch" })>2</a>
                                             </td>
                                             <td>
                                                 <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "60", domain = "Porch" })>All</a>
@@ -88,6 +86,6 @@
                         </div>
                     </div>
                 </div>
-                }
-                }
+    }
+}
 

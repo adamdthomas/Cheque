@@ -5,6 +5,8 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json;
 using HouseFly.App_Start;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace HouseFly.Controllers
 {
@@ -19,17 +21,6 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult Video()
         {
-            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
-
-            ViewBag.cam1URL = vidDictionary["cam1url"];
-            ViewBag.cam1Port = vidDictionary["cam1port"];
-            ViewBag.cam1User = vidDictionary["cam1user"];
-            ViewBag.cam1Pass = vidDictionary["cam1pass"];
-
-            ViewBag.cam2URL = vidDictionary["cam2url"];
-            ViewBag.cam2Port = vidDictionary["cam2port"];
-            ViewBag.cam2User = vidDictionary["cam2user"];
-            ViewBag.cam2Pass = vidDictionary["cam2pass"];
             return View();
         }
 
@@ -37,12 +28,7 @@ namespace HouseFly.Controllers
         [HttpPost]
         public ActionResult Video(string str)
         {
-            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
 
-            ViewBag.URL = vidDictionary["cam1url"];
-            ViewBag.Port = vidDictionary["cam1port"];
-            ViewBag.User = vidDictionary["cam1user"];
-            ViewBag.Pass = vidDictionary["cam1pass"];
             return View();
         }
 
@@ -122,19 +108,6 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult Dashboard()
         {
-
-            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
-
-            ViewBag.cam1URL = vidDictionary["cam1url"];
-            ViewBag.cam1Port = vidDictionary["cam1port"];
-            ViewBag.cam1User = vidDictionary["cam1user"];
-            ViewBag.cam1Pass = vidDictionary["cam1pass"];
-
-            ViewBag.cam2URL = vidDictionary["cam2url"];
-            ViewBag.cam2Port = vidDictionary["cam2port"];
-            ViewBag.cam2User = vidDictionary["cam2user"];
-            ViewBag.cam2Pass = vidDictionary["cam2pass"];
-
             rest("Update", "GarageBench");
             rest("Update", "GarageDoor");
             ViewBag.Message = "";
@@ -169,7 +142,7 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult Porch()
         {
-            rest("Update", "PORCHLIGHTS");
+            rest("Update", "Porch");
             ViewBag.Message = "";
             return View();
         }
@@ -197,10 +170,11 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult HandleTime(string relay, string time, string domain)
         {
+            string redir = "Dashboard";
             try
             {
                 time = (int.Parse(time) * 60000).ToString();
-                rest("time!" + time + "!" + relay + "!", domain);
+                redir = rest("time!" + time + "!" + relay + "!", domain);
                 ViewBag.Message = time + " Minutes Added";
                 System.Threading.Thread.Sleep(1000);
             }
@@ -209,7 +183,7 @@ namespace HouseFly.Controllers
 
             }
 
-            return RedirectToAction(domain);
+            return RedirectToAction(redir);
         }
 
         [Authorize(Users = "adamdthomas@gmail.com")]
@@ -316,5 +290,33 @@ namespace HouseFly.Controllers
             }
             return pageRedirect;
         }
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult BabyCam()
+        {
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+            string url = vidDictionary["cam1url"] + ":" + vidDictionary["cam1port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + vidDictionary["cam1user"] + "&pwd=" + vidDictionary["cam1pass"];
+            var dir = Server.MapPath("/Images");
+            //var path = Path.Combine(dir, "campic.png");
+            string path = @"C:\Temp\campicb.png";
+            Utilities.SaveImage(path, ImageFormat.Png, url);
+            return base.File(path, "image/jpeg");
+        }
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult GarageCam()
+        {
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+            string url = vidDictionary["cam2url"] + ":" + vidDictionary["cam2port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + vidDictionary["cam2user"] + "&pwd=" + vidDictionary["cam2pass"];
+            var dir = Server.MapPath("/Images");
+            // var path = Path.Combine(dir, "campic.png");
+
+            string path = @"C:\Temp\campic.png";
+
+            Utilities.SaveImage(path, ImageFormat.Png, url);
+            return base.File(path, "image/jpeg");
+        }
+
+
     }
 }

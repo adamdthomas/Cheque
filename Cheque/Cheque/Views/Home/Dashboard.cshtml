@@ -141,6 +141,14 @@
                     }
                 </script>
 
+                <script>
+                    function timedRefresh(timeoutPeriod) {
+                        setTimeout(function() {
+                            location.reload(true);
+                        }, timeoutPeriod);
+                    }
+                </script>
+
                 <br />
                 <button data-toggle="collapse" class="btn btn-default" data-target="#sc">Video</button>
                 <br />
@@ -148,7 +156,7 @@
                 <div id="sc" class="collapse">
                     <div class="panel-body">
                         <br />
-                        <img src="@ViewBag.cam2URL:@ViewBag.cam2Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.cam2User&pwd=@ViewBag.cam2Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+                        <img src="@Url.Action("GarageCam","Home")?p" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("?p")+2))+(new Date()).getTime()}, 500)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
                         <br />
                         <br />
                         <div align="center">

@@ -14,6 +14,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using HouseFly.Controllers;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace HouseFly.App_Start
 {
@@ -53,6 +55,46 @@ namespace HouseFly.App_Start
                 isRunning = false;
                 backgroundProcessIsRunning = "True";
             }
+        }
+
+        public static string uniqueID()
+        {
+            return DateTime.Now.ToString("yyyyMMddHHmmss");
+        }
+
+        public static void DeleteFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+        public static void SaveImage(string filename, ImageFormat format, string url)
+        {
+            //<img src="@ViewBag.cam2URL:@ViewBag.cam2Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.cam2User&pwd=@ViewBag.cam2Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+            try
+            {
+                DeleteFile(filename);
+
+                WebClient client = new WebClient();
+                Stream stream = client.OpenRead(url);
+                Bitmap bitmap; bitmap = new Bitmap(stream);
+
+                if (bitmap != null)
+                    bitmap.Save(filename, format);
+
+                stream.Flush();
+                stream.Close();
+                client.Dispose();
+            }
+            catch (Exception)
+            {
+
+              
+            }
+ 
+
         }
 
         static void backgroundProcess()
