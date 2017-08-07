@@ -16,6 +16,7 @@ using System.Web.Mvc;
 using HouseFly.Controllers;
 using System.Drawing.Imaging;
 using System.Drawing;
+using nQuant;
 
 namespace HouseFly.App_Start
 {
@@ -70,7 +71,7 @@ namespace HouseFly.App_Start
             }
         }
 
-        public static void SaveImage(string filename, ImageFormat format, string url)
+        public static void SaveImage(string filename, ImageFormat format, string url, bool compress)
         {
             //<img src="@ViewBag.cam2URL:@ViewBag.cam2Port/CGIProxy.fcgi?cmd=snapPicture2&usr=@ViewBag.cam2User&pwd=@ViewBag.cam2Pass&t=" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 1000)' onerror='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("t=")+2))+(new Date()).getTime()}, 5000)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
             try
@@ -79,16 +80,29 @@ namespace HouseFly.App_Start
 
                 WebClient client = new WebClient();
                 Stream stream = client.OpenRead(url);
-                Bitmap bitmap; bitmap = new Bitmap(stream);
+                Bitmap bitmap = new Bitmap(stream);
 
-                if (bitmap != null)
-                    bitmap.Save(filename, format);
+
+                if (compress)
+                {
+                    ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                    Encoder myEncoder = Encoder.Quality;
+                    EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                    EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);
+                    myEncoderParameters.Param[0] = myEncoderParameter;
+                    bitmap.Save(filename, jpgEncoder, myEncoderParameters);
+                }
+                else
+                {
+                    if (bitmap != null)
+                        bitmap.Save(filename, format);
+                }
 
                 stream.Flush();
                 stream.Close();
                 client.Dispose();
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
               
@@ -96,6 +110,20 @@ namespace HouseFly.App_Start
  
 
         }
+
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
+
 
         static void backgroundProcess()
         {

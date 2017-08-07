@@ -299,7 +299,7 @@ namespace HouseFly.Controllers
             var dir = Server.MapPath("/Images");
             //var path = Path.Combine(dir, "campic.png");
             string path = @"C:\Temp\campicb.png";
-            Utilities.SaveImage(path, ImageFormat.Png, url);
+            Utilities.SaveImage(path, ImageFormat.Png, url, false);
             return base.File(path, "image/jpeg");
         }
 
@@ -313,8 +313,44 @@ namespace HouseFly.Controllers
 
             string path = @"C:\Temp\campic.png";
 
-            Utilities.SaveImage(path, ImageFormat.Png, url);
+            Utilities.SaveImage(path, ImageFormat.Png, url, false);
             return base.File(path, "image/jpeg");
+        }
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult GarageCamJPG()
+        {
+            Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+            string url = vidDictionary["cam2url"] + ":" + vidDictionary["cam2port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + vidDictionary["cam2user"] + "&pwd=" + vidDictionary["cam2pass"];
+            var dir = Server.MapPath("/Images");
+            // var path = Path.Combine(dir, "campic.png");
+
+            string path = @"C:\Temp\campic.jpg";
+
+            Utilities.SaveImage(path, ImageFormat.Png, url, true);
+            return base.File(path, "image/jpeg");
+        }
+
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult UpdateGarageBench()
+        {
+            string r = Utilities.rest(Utilities.garageBenchURL + "update");
+            return Json(r, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult UpdateGarageDoor()
+        {
+            string r = Utilities.rest(Utilities.garageDoorURL + "update");
+            return Json(r, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult UpdatePorchLights()
+        {
+            string r = Utilities.rest(Utilities.porchLightsURL + "update");
+            return Json(r, JsonRequestBehavior.AllowGet);
         }
 
 

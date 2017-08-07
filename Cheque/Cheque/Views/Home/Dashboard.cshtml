@@ -41,15 +41,15 @@
                             <div class="form-group">
                                 <label name="addMinInput">Add Minutes</label>
                                 <input type="hidden" name="domain" value="GarageBench" />
-                                <input class="form-control" type="number" name="min" placeholder="Min">
+                                <input class="form-control" type="number" name="min" value="120">
                                 <br />
                                 <label for="sel1">Outlet:</label>
                                 <select class="form-control" name="relay">
+                                    <option value="all">All</option>
                                     <option value="rOne">Outlet 1</option>
                                     <option value="rTwo">Outlet 2</option>
                                     <option value="rThree">Outlet 3</option>
                                     <option value="rFour">Outlet 4</option>
-                                    <option value="all">All</option>
                                     <option value="openon">Open & On</option>
                                     <option value="closeoff">Close & Off</option>
                                 </select>
@@ -150,13 +150,12 @@
                 </script>
 
                 <br />
-                <button data-toggle="collapse" class="btn btn-default" data-target="#sc">Video</button>
+                <button data-toggle="collapse" class="btn btn-default" data-target="#sc">Hide/Show</button>
                 <br />
-                <br />
-                <div id="sc" class="collapse">
+                <div id="sc" class="collapse in">
                     <div class="panel-body">
                         <br />
-                        <img src="@Url.Action("GarageCam","Home")?p" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("?p")+2))+(new Date()).getTime()}, 500)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+                        <img src="@Url.Action("GarageCamJPG","Home")?p" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("?p")+2))+(new Date()).getTime()}, 500)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
                         <br />
                         <br />
                         <div align="center">
