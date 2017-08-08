@@ -57,41 +57,41 @@ namespace HouseFly.Controllers
             return View();
         }
 
-        [Authorize(Users = "adamdthomas@gmail.com")]
-        public ActionResult SandBoxHandler(string command, string arg)
-        {
-            try
-            {
-                switch (command.ToUpper())
-                {
-                    case "RUNCHECKER":
-                        if (arg.Equals("TRUE"))
-                        {
-                            Utilities.backgroundProcess(true);
-                        }
-                        else
-                        {
-                            Utilities.backgroundProcess(false);
-                        }
-                        break;
-                    case "GENERAL":
-                        if (arg.Equals("TRUE"))
-                        {
-                            Utilities.runCount = 0;
-                            Utilities.errorCount = 0;
-                        }
-                            break;
-                    default:
-                        break;
-                }
-            }
-            catch (Exception)
-            {
+        //[Authorize(Users = "adamdthomas@gmail.com")]
+        //public ActionResult SandBoxHandler(string command, string arg)
+        //{
+        //    try
+        //    {
+        //        switch (command.ToUpper())
+        //        {
+        //            case "RUNCHECKER":
+        //                if (arg.Equals("TRUE"))
+        //                {
+        //                    Utilities.backgroundProcess(true);
+        //                }
+        //                else
+        //                {
+        //                    Utilities.backgroundProcess(false);
+        //                }
+        //                break;
+        //            case "GENERAL":
+        //                if (arg.Equals("TRUE"))
+        //                {
+        //                    Utilities.runCount = 0;
+        //                    Utilities.errorCount = 0;
+        //                }
+        //                    break;
+        //            default:
+        //                break;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
 
-            }
+        //    }
    
-            return RedirectToAction("Sandbox", View());
-        }
+        //    return RedirectToAction("Sandbox", View());
+        //}
 
         public ActionResult Time(int? type)
         {
@@ -108,8 +108,8 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult Dashboard()
         {
-            rest("Update", "GarageBench");
-            rest("Update", "GarageDoor");
+           // rest("Update", "GarageBench");
+           // rest("Update", "GarageDoor");
             ViewBag.Message = "";
             return View();
         }
@@ -186,6 +186,16 @@ namespace HouseFly.Controllers
             return RedirectToAction(redir);
         }
 
+
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult CallController(string command, string domain)
+        {
+            string r = Utilities.rest(Utilities.GetURL(domain) + command);
+            return Json(r, JsonRequestBehavior.AllowGet);
+        }
+
+
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult HandleDoor(string Direction, string Notes)
         {
@@ -240,7 +250,7 @@ namespace HouseFly.Controllers
                 switch (domain.ToUpper())
                 {
                     case "GARAGEBENCH":
-                        r = Utilities.rest(Utilities.garageBenchURL + uri);
+                        r = Utilities.rest(Utilities.GetURL("GarageBench") + uri);
                         JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
                         ViewBag.Temp = JD["Temp"];
                         ViewBag.Humidity = JD["Humidity"];
@@ -255,14 +265,14 @@ namespace HouseFly.Controllers
                         pageRedirect = "Dashboard";
                         break;
                     case "PORCH":
-                        r = Utilities.rest(Utilities.porchLightsURL + uri);
+                        r = Utilities.rest(Utilities.GetURL("PorchLights") + uri);
                         JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
                         ViewBag.rpt1 = Utilities.ToSec(JD["r1t"]);
                         ViewBag.rpt2 = Utilities.ToSec(JD["r2t"]);
                         pageRedirect = "Porch";
                         break;
                     case "GARAGEDOOR":
-                        r = Utilities.rest(Utilities.garageDoorURL + uri);
+                        r = Utilities.rest(Utilities.GetURL("GarageDoor") + uri);
                         JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
                         string doorStat;
                         if (JD["DoorOpened"].ToUpper() == "TRUE")
@@ -286,7 +296,7 @@ namespace HouseFly.Controllers
             }
             catch (Exception)
             {
-           
+
             }
             return pageRedirect;
         }
@@ -328,30 +338,10 @@ namespace HouseFly.Controllers
             string path = @"C:\Temp\campic.jpg";
 
             Utilities.SaveImage(path, ImageFormat.Png, url, true);
-            return base.File(path, "image/jpeg");
+            return File(path, "image/jpeg");
         }
 
 
-        [Authorize(Users = "adamdthomas@gmail.com")]
-        public ActionResult UpdateGarageBench()
-        {
-            string r = Utilities.rest(Utilities.garageBenchURL + "update");
-            return Json(r, JsonRequestBehavior.AllowGet);
-        }
-
-        [Authorize(Users = "adamdthomas@gmail.com")]
-        public ActionResult UpdateGarageDoor()
-        {
-            string r = Utilities.rest(Utilities.garageDoorURL + "update");
-            return Json(r, JsonRequestBehavior.AllowGet);
-        }
-
-        [Authorize(Users = "adamdthomas@gmail.com")]
-        public ActionResult UpdatePorchLights()
-        {
-            string r = Utilities.rest(Utilities.porchLightsURL + "update");
-            return Json(r, JsonRequestBehavior.AllowGet);
-        }
 
 
     }

@@ -22,9 +22,6 @@ namespace HouseFly.App_Start
 {
     public static class Utilities
     {
-        public static string garageBenchURL = @"http://192.168.1.18/";
-        public static string garageDoorURL = @"http://192.168.1.19/";
-        public static string porchLightsURL = @"http://192.168.1.20/";
 
         private static TempContext db;
         public static string backgroundProcessIsRunning = "";
@@ -35,28 +32,49 @@ namespace HouseFly.App_Start
         private static int pause = 500000;
 
 
-
-        public static void backgroundProcess(bool shouldRun)
+        public static string GetURL(string domain)
         {
-            if (shouldRun)
+            string url = "";
+            switch (domain.ToUpper())
             {
-                backgroundProcessIsRunning = "True";
-                isRunning = true;
-                try
-                {
-                    bp = new Thread(backgroundProcess);
-                    bp.Start();
-                }
-                catch (Exception)
-                {
-                }
+                case "GARAGEBENCH":
+                    url = @"http://192.168.1.18/";
+                    break;
+                case "PORCH":
+                    url = @"http://192.168.1.20/";
+                    break;
+                case "GARAGEDOOR":
+                    url = @"http://192.168.1.19/";
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                isRunning = false;
-                backgroundProcessIsRunning = "True";
-            }
+
+            return url;
         }
+
+
+        //public static void backgroundProcess(bool shouldRun)
+        //{
+        //    if (shouldRun)
+        //    {
+        //        backgroundProcessIsRunning = "True";
+        //        isRunning = true;
+        //        try
+        //        {
+        //            bp = new Thread(backgroundProcess);
+        //            bp.Start();
+        //        }
+        //        catch (Exception)
+        //        {
+        //        }
+        //    }
+        //    else
+        //    {
+        //        isRunning = false;
+        //        backgroundProcessIsRunning = "True";
+        //    }
+        //}
 
         public static string uniqueID()
         {
@@ -125,30 +143,30 @@ namespace HouseFly.App_Start
         }
 
 
-        static void backgroundProcess()
-        {
-            Thread.CurrentThread.IsBackground = true;
-            while (isRunning)
-            {
-                string r = rest(garageBenchURL + "update");
-                Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
-                TempModels tempModel = new TempModels();
+        //static void backgroundProcess()
+        //{
+        //    Thread.CurrentThread.IsBackground = true;
+        //    while (isRunning)
+        //    {
+        //        string r = rest(garageBenchURL + "update");
+        //        Dictionary<string, string> JD = JsonConvert.DeserializeObject<Dictionary<string, string>>(r);
+        //        TempModels tempModel = new TempModels();
                         
 
-                tempModel.Domain = "Garage";
-                tempModel.Humidity = decimal.Parse(JD["Humidity"]);
-                tempModel.Temp = decimal.Parse(JD["Temp"]);
-                tempModel.Pressure = decimal.Parse(JD["Pressure"]);
-                tempModel.TimeStamp = DateTime.Now.ToString();
+        //        tempModel.Domain = "Garage";
+        //        tempModel.Humidity = decimal.Parse(JD["Humidity"]);
+        //        tempModel.Temp = decimal.Parse(JD["Temp"]);
+        //        tempModel.Pressure = decimal.Parse(JD["Pressure"]);
+        //        tempModel.TimeStamp = DateTime.Now.ToString();
 
-                TempModelsController tmc = new TempModelsController();
-                tmc.CreateInternal(tempModel);
+        //        TempModelsController tmc = new TempModelsController();
+        //        tmc.CreateInternal(tempModel);
                 
 
 
-                Thread.Sleep(pause);
-            }
-        }
+        //        Thread.Sleep(pause);
+        //    }
+        //}
 
         public static string rest(string url) {
  

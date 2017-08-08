@@ -1,17 +1,10 @@
-﻿function format(display) {
-    return function (minutes, seconds, hours) {
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        hours = hours < 10 ? "0" + hours : hours;
-        display.textContent = hours + ":" + minutes + ':' + seconds;
-    };
-}
-
+﻿
 function CountDownTimer(duration, granularity) {
     this.duration = duration;
     this.granularity = granularity || 1000;
     this.tickFtns = [];
     this.running = false;
+    this.timer = false;
 }
 
 CountDownTimer.prototype.start = function () {
@@ -27,7 +20,7 @@ CountDownTimer.prototype.start = function () {
         diff = that.duration - (((Date.now() - start) / 1000) | 0);
 
         if (diff > 0) {
-            setTimeout(timer, that.granularity);
+            that.timer = setTimeout(timer, that.granularity);
         } else {
             diff = 0;
             that.running = false;
@@ -45,6 +38,10 @@ CountDownTimer.prototype.onTick = function (ftn) {
         this.tickFtns.push(ftn);
     }
     return this;
+};
+
+CountDownTimer.prototype.stop = function () {
+    return clearTimeout(this.timer);
 };
 
 CountDownTimer.prototype.expired = function () {
@@ -75,6 +72,25 @@ CountDownTimer.parse = function (seconds) {
         'hours': hor
     };
 };
+
+function format(display) {
+    return function (minutes, seconds, hours) {
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        hours = hours < 10 ? "0" + hours : hours;
+        display.textContent = hours + ":" + minutes + ':' + seconds;
+    };
+}
+
+
+function ToSec(milliseconds) {
+
+    secLeft = milliseconds / 1000;
+    if (secLeft < 0) {
+        secLeft = 0;
+    }
+    return secLeft;
+}
 
 function handleTime(rNum, time) {
     $.ajax({

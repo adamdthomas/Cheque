@@ -1,38 +1,32 @@
-﻿
-
-@if (Request.IsAuthenticated)
+﻿@if (Request.IsAuthenticated)
 {
     if (User.Identity.Name == "adamdthomas@gmail.com")
     {
-        <br/>
+        <script>
+
+            function Getgarage() {
+                $.get("@Url.Action("UpdateGarageBench", "Home")", function (data) {
+                    $('#elone').text(data);
+                    var myJ = JSON.parse(data);
+                    $('#eltwo').text(myJ.Temp);
+                });
+            }
+
+
+        </script>
+
+
+        <br />
+        <input type="button" value="Test Element Update" class="btn btn-danger btn-lg" onclick="Getgarage();" />
         <br />
         <br />
-        
-        <p> Running: @ViewBag.isRunning </p>
-        <p> Success Count: @ViewBag.runCount </p>
-        <p> Error Count: @ViewBag.errorCount </p>
-
-        <div class="row">
-            <div class="col-xs-2" align="center">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <th scope="row">KeepAlive:</th>
-                            <td>
-                                <a type="button" class="btn btn-default" href=@Url.Action("SandBoxHandler", "Home", new { command = "RUNCHECKER", arg = "TRUE" })>Start</a>
-                            </td>
-                            <td>
-                                <a type="button" class="btn btn-default" href=@Url.Action("SandBoxHandler", "Home", new { command = "RUNCHECKER", arg = "FALSE" })>Stop</a>
-                            </td>
-                            <td>
-                                <a type="button" class="btn btn-default" href=@Url.Action("SandBoxHandler", "Home", new { command = "GENERAL", arg = "CLEAR" })>Clear</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-                            }
-                            }
+        <p>1: <span id="elone"></span></p>
+        <br />
+        <p>2: <span id="eltwo"></span></p>
+        <br />
+        <p>3: <span id="elthree"></span></p>
+        <br />
+        <p>4: <span id="elfour"></span></p>
+        <br />
+    }
+}

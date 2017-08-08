@@ -8,27 +8,83 @@
     {
         <!--Script for individual relay countdown timers-->
         <script>
-            window.onload = function () {
 
-                var r1 = new CountDownTimer(@ViewBag.rt1),
-                    r2 = new CountDownTimer(@ViewBag.rt2),
-                    r3 = new CountDownTimer(@ViewBag.rt3),
-                    r4 = new CountDownTimer(@ViewBag.rt4);
 
-                rp1 = new CountDownTimer(@ViewBag.rpt1);
-                rp2 = new CountDownTimer(@ViewBag.rpt2);
+                window.onload = function () {
+                    Update();
 
-                r1.onTick(format(document.querySelector('#relayone'))).start();
-                r2.onTick(format(document.querySelector('#relaytwo'))).start();
-                r3.onTick(format(document.querySelector('#relaythree'))).start();
-                r4.onTick(format(document.querySelector('#relayfour'))).start();
+                    $("#bigswitch").submit(function (e) {
+                        e.preventDefault();
+                        callGarageBench("time!" + $("#minutes").val() * 60000 + "!" + $("#relaynumber").val() + "!")
+                    });
+  
+                };
 
-                rp1.onTick(format(document.querySelector('#porchrelayone'))).start();
-                rp2.onTick(format(document.querySelector('#porchrelaytwo'))).start();
+                function Update() {
+                    callGarageBench("update");
+                    callGarageDoor("update");
+                }
 
-            };
+  
+
+
+            function callGarageDoor(command) {
+                $.get("@Url.Action("CallController", "home")", { command: command, domain: "GARAGEDOOR" })
+                    .always(function (data) {
+                        var myJ = JSON.parse(data);
+                        if (myJ.DoorOpened == "true") {
+                            $('#door').text("Opened");
+                        } else {
+                            $('#door').text("Closed");
+                        }
+                        setTimeout(function () { callGarageDoor("update"); }, 5000);
+                    });
+            }
+            
+        
+
+            function callGarageBench(command) {
+
+               $.get("@Url.Action("CallController", "home")", { command: command, domain: "GARAGEBENCH" })
+                    .always(function (data) {
+                    var myJ = JSON.parse(data);
+
+                    if(window.timers){
+                        $.each(window.timers, function( index, timer ) {
+                            timer.stop()
+                        });
+                    }
+
+
+                    var r1 = new CountDownTimer(ToSec(myJ.r1t)),
+                    r2 = new CountDownTimer(ToSec(myJ.r2t)),
+                    r3 = new CountDownTimer(ToSec(myJ.r3t)),
+                    r4 = new CountDownTimer(ToSec(myJ.r4t));
+
+                    window.timers = [r1, r2, r3, r4]
+
+                    r1.onTick(format(document.querySelector('#relayone'))).start();
+                    r2.onTick(format(document.querySelector('#relaytwo'))).start();
+                    r3.onTick(format(document.querySelector('#relaythree'))).start();
+                    r4.onTick(format(document.querySelector('#relayfour'))).start();
+
+                    $('#temp').text(myJ.Temp);
+                    $('#humid').text(myJ.Humidity);
+                    $('#press').text(myJ.Pressure);
+
+
+                    
+                });
+            }
+
+
 
         </script>
+
+
+
+        		
+
 
         <h1 class="lead">Garage</h1>
 
@@ -37,14 +93,14 @@
                 <div class="row">
                     <div class="col-xs-6">
                         <!--Drop down list for individual relays and custom time-->
-                        <form method="post">
+                        <form id="bigswitch" method="post">
                             <div class="form-group">
                                 <label name="addMinInput">Add Minutes</label>
                                 <input type="hidden" name="domain" value="GarageBench" />
-                                <input class="form-control" type="number" name="min" value="120">
+                                <input id="minutes" class="form-control" type="number" name="min" value="120">
                                 <br />
                                 <label for="sel1">Outlet:</label>
-                                <select class="form-control" name="relay">
+                                <select id="relaynumber" class="form-control" name="relay">
                                     <option value="all">All</option>
                                     <option value="rOne">Outlet 1</option>
                                     <option value="rTwo">Outlet 2</option>
@@ -57,16 +113,17 @@
                                 <button type="submit" class="btn btn-success">Submit</button>
                                 <br />
                                 <br />
-                                <a type="button" class="btn btn-default" href=@Url.Action("Update", "Home")>Update</a>
+                                <a type="button" class="btn btn-default" onclick="Update();">Update</a>
                             </div>
                         </form>
                         <br />
                     </div>
                     <div class="col-xs-6">
-                        <p>Garage Door: @ViewBag.GarageDoor</p>
-                        <p>Temperature: @ViewBag.Temp</p>
-                        <p>Humidity: @ViewBag.Humidity %</p>
-                        <p>Pressure: @ViewBag.Pressure hPa</p>
+                        <p>Garage Door: <span id="door"></span></p>
+                        <p>Temperature: <span id="temp"></span></p>
+                        <p>Humidity: <span id="humid"></span> %</p>
+                        <p>Pressure: <span id="press"></span> hPa</p>
+
                         <p>1: <span id="relayone"></span></p>
                         <p>2: <span id="relaytwo"></span></p>
                         <p>3: <span id="relaythree"></span></p>
@@ -80,37 +137,37 @@
                                 <tr>
                                     <th scope="row">Add</th>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "15", domain = "garageBench" })>1</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!900000!rOne!');">1</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "15", domain = "garageBench" })>2</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!900000!rTwo!');">2</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rThree", time = "15", domain = "garageBench" })>3</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!900000!rThree!');">3</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rFour", time = "15", domain = "garageBench" })>4</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!900000!rFour!');">4</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "15", domain = "garageBench" })>All</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!900000!all!');">All</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Clear</th>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "0", domain = "garageBench" })>1</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!0!rOne!');">1</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "0", domain = "garageBench" })>2</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!0!rTwo!');">2</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rThree", time = "0", domain = "garageBench" })>3</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!0!rThree!');">3</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rFour", time = "0", domain = "garageBench" })>4</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!0!rFour!');">4</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "0", domain = "garageBench" })>All</a>
+                                        <a class="btn btn-default" onclick="callGarageBench('t!0!all!');">All</a>
                                     </td>
                                 </tr>
 
@@ -121,17 +178,17 @@
                                 <tr>
                                     <th scope="row">Garage Door</th>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleDoor", "Home", new { Direction = "Open", Notes = "FromHF" })>Open</a>
+                                        <a class="btn btn-default" onclick="callGarageDoor('GarageDoor/Open')">Open</a>
                                     </td>
                                     <td>
-                                        <a type="button" class="btn btn-default" href=@Url.Action("HandleDoor", "Home", new { Direction = "Close", Notes = "FromHF" })>Close</a>
+                                        <a class="btn btn-default" onclick="callGarageDoor('GarageDoor/Close')">Close</a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
+                
                 <script>
                     function directCam(d, camName) {
                         $.ajax({
@@ -147,6 +204,7 @@
                             location.reload(true);
                         }, timeoutPeriod);
                     }
+
                 </script>
 
                 <br />
