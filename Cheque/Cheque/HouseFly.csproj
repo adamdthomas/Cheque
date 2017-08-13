@@ -226,17 +226,6 @@
     <Content Include="android-icon-48x48.png" />
     <Content Include="android-icon-72x72.png" />
     <Content Include="android-icon-96x96.png" />
-    <Content Include="apple-icon-114x114.png" />
-    <Content Include="apple-icon-120x120.png" />
-    <Content Include="apple-icon-144x144.png" />
-    <Content Include="apple-icon-152x152.png" />
-    <Content Include="apple-icon-180x180.png" />
-    <Content Include="apple-icon-57x57.png" />
-    <Content Include="apple-icon-60x60.png" />
-    <Content Include="apple-icon-72x72.png" />
-    <Content Include="apple-icon-76x76.png" />
-    <Content Include="apple-icon-precomposed.png" />
-    <Content Include="apple-icon.png" />
     <Content Include="browserconfig.xml" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />

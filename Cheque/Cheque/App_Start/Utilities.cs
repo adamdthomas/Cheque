@@ -30,6 +30,7 @@ namespace HouseFly.App_Start
         public static int errorCount = 0;
         private static Thread bp;
         private static int pause = 500000;
+        public static Dictionary<string, string> config = GetConfigData();
 
 
         public static string GetURL(string domain)

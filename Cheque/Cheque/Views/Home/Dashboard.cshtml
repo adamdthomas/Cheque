@@ -12,20 +12,27 @@
 
                 window.onload = function () {
                     Update();
+                    outsideTemp();
 
                     $("#bigswitch").submit(function (e) {
                         e.preventDefault();
                         callGarageBench("time!" + $("#minutes").val() * 60000 + "!" + $("#relaynumber").val() + "!")
                     });
-  
+
                 };
 
                 function Update() {
                     callGarageBench("update");
                     callGarageDoor("update");
+                    
                 }
 
-  
+                function Sync() {
+                    outsideTemp();
+                    setTimeout(function () { Update(); }, 5000);
+                }
+
+
 
 
             function callGarageDoor(command) {
@@ -40,8 +47,15 @@
                         setTimeout(function () { callGarageDoor("update"); }, 5000);
                     });
             }
-            
-        
+
+            function outsideTemp() {
+                $.get("@Url.Action("GetWeather", "home")", function (data) {
+                        var myJ = JSON.parse(data);
+                      $( "#outsidetemp" ).text( myJ.main.temp );
+
+                    });
+               }
+
 
             function callGarageBench(command) {
 
@@ -73,7 +87,7 @@
                     $('#press').text(myJ.Pressure);
 
 
-                    
+
                 });
             }
 
@@ -113,16 +127,17 @@
                                 <button type="submit" class="btn btn-success">Submit</button>
                                 <br />
                                 <br />
-                                <a type="button" class="btn btn-default" onclick="Update();">Update</a>
+                                <a type="button" class="btn btn-default" onclick="Sync();">Update</a>
                             </div>
                         </form>
                         <br />
                     </div>
                     <div class="col-xs-6">
                         <p>Garage Door: <span id="door"></span></p>
-                        <p>Temperature: <span id="temp"></span></p>
+                        <p>Inside Temp: <span id="temp"></span></p>
                         <p>Humidity: <span id="humid"></span> %</p>
                         <p>Pressure: <span id="press"></span> hPa</p>
+                        <p>Outside Temp: <span id="outsidetemp"></span></p>
 
                         <p>1: <span id="relayone"></span></p>
                         <p>2: <span id="relaytwo"></span></p>

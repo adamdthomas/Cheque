@@ -8,15 +8,52 @@
     {
         <!--Script for individual relay countdown timers-->
         <script>
-            window.onload = function () {
-
-                var rp1 = new CountDownTimer(@ViewBag.rpt1);
-                rp2 = new CountDownTimer(@ViewBag.rpt2);
-
-                rp1.onTick(format(document.querySelector('#porchrelayone'))).start();
-                rp2.onTick(format(document.querySelector('#porchrelaytwo'))).start();
-
+                window.onload = function () {
+                Update();
+                $("#bigswitch").submit(function (e) {
+                    e.preventDefault();
+                    callPorchLights("time!" + $("#minutes").val() * 60000 + "!" + $("#relaynumber").val() + "!")
+                });
             };
+
+            function Update() {
+                callPorchLights("update");
+                outsideTemp();
+            }
+
+            function outsideTemp() {
+                $.get("@Url.Action("GetWeather", "home")", function (data) {
+                    var myJ = JSON.parse(data);
+                    $( "#outsidetemp" ).text( myJ.main.temp );
+
+                });
+            }
+
+            function callPorchLights(command) {
+
+                $.get("@Url.Action("CallController", "home")", { command: command, domain: "Porch" })
+                    .always(function (data) {
+                var myJ = JSON.parse(data);
+
+                if (window.timers) {
+                    $.each(window.timers, function (index, timer) {
+                        timer.stop()
+                    });
+                }
+
+
+                var r1 = new CountDownTimer(ToSec(myJ.r1t)),
+                r2 = new CountDownTimer(ToSec(myJ.r2t));
+
+                window.timers = [r1, r2]
+
+                r1.onTick(format(document.querySelector('#porchrelayone'))).start();
+                r2.onTick(format(document.querySelector('#porchrelaytwo'))).start();
+
+
+
+            });
+            }
         </script>
 
         <h1 class="lead">Porch</h1>
@@ -25,7 +62,7 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <!--Drop down list for individual relays and custom time-->
-                                <form method="post">
+                                <form id="bigswitch" method="post">
                                     <div class="form-group">
                                         <label name="addMinInput">Add Minutes</label>
                                         <input type="hidden" name="domain" value="Porch" />
@@ -41,7 +78,7 @@
                                         <button type="submit" class="btn btn-success">Submit</button>
                                         <br />
                                         <br />
-                                        <a type="button" class="btn btn-default" href=@Url.Action("UpdatePorch", "Home")>Update</a>
+                                        <a class="btn btn-default" onclick="Sync();">Update</a>
 
 
                                     </div>
@@ -49,6 +86,7 @@
                                 <br />
                             </div>
                             <div class="col-xs-6">
+                                <p>Outside Temp: <span id="outsidetemp"></span></p>
                                 <p>1: <span id="porchrelayone"></span></p>
                                 <p>2: <span id="porchrelaytwo"></span></p>
                             </div>
@@ -60,25 +98,25 @@
                                         <tr>
                                             <th scope="row">Add</th>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "60", domain = "Porch" })>1</a>
+                                                <a class="btn btn-default" onclick="callPorchLights('t!3600000!rOne!');">1</a>
                                             </td>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "5", domain = "Porch" })>2</a>
+                                                <a class="btn btn-default" onclick="callPorchLights('t!300000!rTwo!');">2</a>
                                             </td>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "60", domain = "Porch" })>All</a>
+                                                <a class="btn btn-default" onclick="callPorchLights('t!900000!all!');">All</a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Clear</th>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rOne", time = "0", domain = "Porch" })>1</a>
+                                                <a class="btn btn-default" onclick="callPorchLights('t!0!rOne!');">1</a>
                                             </td>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "rTwo", time = "0", domain = "Porch" })>2</a>
+                                                <a class="btn btn-default" onclick="callPorchLights('t!0!rTwo!');">2</a>
                                             </td>
                                             <td>
-                                                <a type="button" class="btn btn-default" href=@Url.Action("HandleTime", "Home", new { relay = "all", time = "0", domain = "Porch" })>All</a>
+                                                <a class="btn btn-default" onclick="callPorchLights('t!0!all!');">All</a>
                                             </td>
                                         </tr>
                                     </tbody>
