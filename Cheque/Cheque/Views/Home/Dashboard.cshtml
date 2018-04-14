@@ -9,10 +9,12 @@
         <!--Script for individual relay countdown timers-->
         <script>
 
+            window.onload = function () {
 
-                window.onload = function () {
+
                     Update();
                     outsideTemp();
+
 
                     $("#bigswitch").submit(function (e) {
                         e.preventDefault();
@@ -24,12 +26,11 @@
                 function Update() {
                     callGarageBench("update");
                     callGarageDoor("update");
-                    
                 }
 
                 function Sync() {
                     outsideTemp();
-                    setTimeout(function () { Update(); }, 5000);
+                    setInterval(function () { Update(); }, 30000);
                 }
 
 
@@ -52,9 +53,20 @@
                 $.get("@Url.Action("GetWeather", "home")", function (data) {
                         var myJ = JSON.parse(data);
                       $( "#outsidetemp" ).text( myJ.main.temp );
-
+                      $("#outsidehumid").text(myJ.main.humidity);
+                      $("#outsidedesc").text(myJ.weather[0].description);
                     });
-               }
+            }
+
+
+
+            @*function setPic() {
+                $.get("@Url.Action("GarageCamJPG","Home")", function (data) {
+                    var picAddress = data + "?p";
+                    $("#pic").attr("src", picAddress);
+
+                });
+            }*@
 
 
             function callGarageBench(command) {
@@ -97,10 +109,12 @@
 
 
 
-        		
+
 
 
         <h1 class="lead">Garage</h1>
+
+
 
         <div class="panel panel-default">
             <div class="panel-body">
@@ -133,20 +147,40 @@
                         <br />
                     </div>
                     <div class="col-xs-6">
-                        <p>Garage Door: <span id="door"></span></p>
-                        <p>Inside Temp: <span id="temp"></span></p>
+                        <label>Inside:</label>
+                        <p>Door: <span id="door"></span></p>
+                        <p>Temp: <span id="temp"></span></p>
                         <p>Humidity: <span id="humid"></span> %</p>
                         <p>Pressure: <span id="press"></span> hPa</p>
-                        <p>Outside Temp: <span id="outsidetemp"></span></p>
+                        <label>Outside:</label>
+                        <p>Weather: <span id="outsidedesc"></span></p>
+                        <p>Temp: <span id="outsidetemp"></span></p>
+                        <p>Humidity: <span id="outsidehumid"></span> %</p>
 
-                        <p>1: <span id="relayone"></span></p>
-                        <p>2: <span id="relaytwo"></span></p>
-                        <p>3: <span id="relaythree"></span></p>
-                        <p>4: <span id="relayfour"></span></p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12" align="center">
+
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span id="relayone"></span>
+                                    </td>
+                                    <td>
+                                        <span id="relaytwo"></span>
+                                    </td>
+                                    <td>
+                                        <span id="relaythree"></span>
+                                    </td>
+                                    <td>
+                                        <span id="relayfour"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -186,8 +220,12 @@
                                     </td>
                                 </tr>
 
+
                             </tbody>
                         </table>
+
+
+
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -203,7 +241,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <script>
                     function directCam(d, camName) {
                         $.ajax({
@@ -215,10 +253,12 @@
 
                 <script>
                     function timedRefresh(timeoutPeriod) {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             location.reload(true);
                         }, timeoutPeriod);
                     }
+
+
 
                 </script>
 
@@ -228,7 +268,7 @@
                 <div id="sc" class="collapse in">
                     <div class="panel-body">
                         <br />
-                        <img src="@Url.Action("GarageCamJPG","Home")?p" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("?p")+2))+(new Date()).getTime()}, 500)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+                        <img id="garage" src="@Url.Action("GarageCamJPG","Home")?p" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("?p")+2))+(new Date()).getTime()}, 500)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
                         <br />
                         <br />
                         <div align="center">
@@ -254,11 +294,16 @@
                                 <span class="glyphicon glyphicon-zoom-out" />
                             </button>
                         </div>
+
+                        <br />
+                        <img id="drive" src="@Url.Action("DrivewayCamJPG","Home")?p" onload='setTimeout(function() {src = src.substring(0, (src.lastIndexOf("?p")+2))+(new Date()).getTime()}, 500)' img style='height: 100%; width: 100%; object-fit: contain' alt='' />
+                        <br />
+                        <br />
                     </div>
                 </div>
 
             </div>
         </div>
-     }
+    }
 }
 

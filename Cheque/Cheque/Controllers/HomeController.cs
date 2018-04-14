@@ -350,6 +350,20 @@ namespace HouseFly.Controllers
             return File(path, "image/jpeg");
         }
 
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult DrivewayCamJPG()
+        {
+            //Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+            string url = config["cam3url"] + ":" + config["cam3port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + config["cam3user"] + "&pwd=" + config["cam3pass"];
+            var dir = Server.MapPath("/Images");
+            // var path = Path.Combine(dir, "campic.png");
+
+            string path = @"C:\Temp\campicD.jpg";
+
+            Utilities.SaveImage(path, ImageFormat.Png, url, true);
+            return File(path, "image/jpeg");
+        }
+
 
 
 
