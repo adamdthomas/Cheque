@@ -339,32 +339,59 @@ namespace HouseFly.Controllers
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult GarageCamJPG()
         {
-            //Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
-            string url = config["cam2url"] + ":" + config["cam2port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + config["cam2user"] + "&pwd=" + config["cam2pass"];
-            var dir = Server.MapPath("/Images");
-            // var path = Path.Combine(dir, "campic.png");
+            DateTime currentTime = DateTime.Now;
+            TimeSpan elapsedTime = currentTime - lastLoadTime;
+            if (elapsedTime.TotalMinutes < 1)
+            {
+                string url = config["cam2url"] + ":" + config["cam2port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + config["cam2user"] + "&pwd=" + config["cam2pass"];
+                var dir = Server.MapPath("/Images");
+                string path = @"C:\Temp\campic.jpg";
+                SaveImage(path, ImageFormat.Png, url, true);
+                lastLoadTime = currentTime;
 
-            string path = @"C:\Temp\campic.jpg";
+                return File(path, "image/jpeg", "garagecam");
+            }
+            else
+            {
+                lastLoadTime = currentTime;
+                hasLoaded = true;
+                return File(@"C:\FTP\Config\zero.jpg", "image/jpeg", "garagecam");
 
-            Utilities.SaveImage(path, ImageFormat.Png, url, true);
-            return File(path, "image/jpeg");
+            }
         }
 
         [Authorize(Users = "adamdthomas@gmail.com")]
         public ActionResult DrivewayCamJPG()
         {
-            //Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
-            string url = config["cam3url"] + ":" + config["cam3port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + config["cam3user"] + "&pwd=" + config["cam3pass"];
-            var dir = Server.MapPath("/Images");
-            // var path = Path.Combine(dir, "campic.png");
+            DateTime currentTime = DateTime.Now;
+            TimeSpan elapsedTime = currentTime - lastLoadTime;
+            if (elapsedTime.TotalMinutes < 1)
+            {
+                //Dictionary<string, string> vidDictionary = Utilities.GetConfigData();
+                string url = config["cam3url"] + ":" + config["cam3port"] + @"/CGIProxy.fcgi?cmd=snapPicture2&usr=" + config["cam3user"] + "&pwd=" + config["cam3pass"];
+                var dir = Server.MapPath("/Images");
+                // var path = Path.Combine(dir, "campic.png");
 
-            string path = @"C:\Temp\campicD.jpg";
+                string path = @"C:\Temp\campicD.jpg";
 
-            Utilities.SaveImage(path, ImageFormat.Png, url, true);
-            return File(path, "image/jpeg");
+                Utilities.SaveImage(path, ImageFormat.Png, url, true);
+                return File(path, "image/jpeg");
+            }
+            else
+            {
+                lastLoadTime = currentTime;
+                hasLoaded = true;
+                return File(@"C:\FTP\Config\zero.jpg", "image/jpeg", "drivewaycam");
+            }
+}
+
+
+        [Authorize(Users = "adamdthomas@gmail.com")]
+        public ActionResult Reset()
+        {
+            hasLoaded = false;
+            return Content("");
         }
-
-
 
 
     }

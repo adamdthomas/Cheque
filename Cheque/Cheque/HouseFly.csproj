@@ -237,6 +237,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\fly.png" />
     <Content Include="lightgreyfly.png" />
     <Content Include="ms-icon-144x144.png" />
     <Content Include="ms-icon-150x150.png" />
@@ -318,7 +319,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
     <Folder Include="Views\Porch\" />
   </ItemGroup>
   <ItemGroup>

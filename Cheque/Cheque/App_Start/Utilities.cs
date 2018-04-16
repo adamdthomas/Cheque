@@ -31,6 +31,8 @@ namespace HouseFly.App_Start
         private static Thread bp;
         private static int pause = 500000;
         public static Dictionary<string, string> config = GetConfigData();
+        public static bool hasLoaded = false;
+        public static DateTime lastLoadTime = DateTime.Parse("01/01/1900");
 
 
         public static string GetURL(string domain)
@@ -46,6 +48,9 @@ namespace HouseFly.App_Start
                     break;
                 case "GARAGEDOOR":
                     url = @"http://192.168.1.19/";
+                    break;
+                case "ATTIC":
+                    url = @"http://192.168.1.21/";
                     break;
                 default:
                     break;
@@ -196,7 +201,7 @@ namespace HouseFly.App_Start
         public static Dictionary<string,string> GetConfigData()
                 {
                     Dictionary<string, string> dicConfig = new Dictionary<string, string>();
-                    System.Collections.Generic.IEnumerable<String> lines = File.ReadLines(@"C:\FTP\Config\camcreds.txt");
+                    IEnumerable<string> lines = File.ReadLines(@"C:\FTP\Config\camcreds.txt");
 
                     foreach (var item in lines)
                     {
